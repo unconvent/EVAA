@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Testimonial = {
   quote: string;
@@ -92,6 +92,13 @@ export function TestimonialsCarousel() {
 
   const marquee = [...items, ...items];
 
+  const setMeasureRef = useCallback(
+    (i: number) => (el: HTMLDivElement | null) => {
+      if (i < items.length) measureRefs.current[i] = el;
+    },
+    [items.length]
+  );
+
   // Auto-scroll with requestAnimationFrame so we can pause and step
   useEffect(() => {
     let raf: number | null = null;
@@ -166,10 +173,7 @@ export function TestimonialsCarousel() {
             className="relative h-full w-[420px] shrink-0 overflow-hidden rounded-3xl border border-white/10 bg-[#0e1222]/80 ring-1 ring-white/5 shadow-[0_28px_70px_rgba(6,8,18,0.55)]"
             style={cardHeight ? { height: `${cardHeight}px` } : undefined}
           >
-            <div
-              ref={idx < items.length ? (el) => (measureRefs.current[idx] = el) : undefined}
-              className="flex h-full flex-col p-7"
-            >
+            <div ref={idx < items.length ? setMeasureRef(idx) : undefined} className="flex h-full flex-col p-7">
               <div className="flex items-center gap-3">
                 <img
                   src={t.avatar}

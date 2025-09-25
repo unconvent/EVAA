@@ -9,7 +9,10 @@ export const dynamic = "force-dynamic";
 // read latest row from `subscriptions` and separately fetch the last studio run timestamp.
 type PlanInfo = { plan: string; interval: string | null; lastRunAt: string | null };
 
-async function resolvePlan(client: ReturnType<typeof createServerSupabase>, userId: string): Promise<PlanInfo> {
+async function resolvePlan(
+  client: Awaited<ReturnType<typeof createServerSupabase>>,
+  userId: string
+): Promise<PlanInfo> {
   const fallback: PlanInfo = { plan: "free", interval: null, lastRunAt: null };
   if (!client) return fallback;
 
@@ -69,7 +72,7 @@ export default async function SubjectLinesPage() {
     planInfo = await resolvePlan(supabase, user.id);
   } catch (error) {
     console.error("Failed to fetch plan for subject line studio", error);
-    planInfo = { plan: "free", lastRunAt: null };
+    planInfo = { plan: "free", interval: null, lastRunAt: null };
   }
 
   const plan = planInfo.plan ?? "free";
