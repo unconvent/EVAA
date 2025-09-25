@@ -64,19 +64,20 @@ export async function POST(req: Request) {
     } as Record<string, unknown>;
 
     // Qwen image model
-    const output: any = await replicate.run("qwen/qwen-image", { input });
+    const output: unknown = await replicate.run("qwen/qwen-image", { input });
 
     const urls: string[] = [];
     const pushIfUrl = (v: unknown) => {
       if (!v) return;
       if (typeof v === "string" && /^https?:\/\//.test(v)) urls.push(v);
       else if (typeof v === "object") {
-        const anyV = v as any;
-        if (typeof anyV.url === "string") urls.push(anyV.url);
-        else if (typeof anyV.url === "function") {
+        const obj = v as Record<string, unknown>;
+        const u = obj?.url as unknown;
+        if (typeof u === "string") urls.push(u);
+        else if (typeof u === "function") {
           try {
-            const u = anyV.url();
-            if (typeof u === "string") urls.push(u);
+            const res = (u as () => unknown)();
+            if (typeof res === "string") urls.push(res);
           } catch {}
         }
       }

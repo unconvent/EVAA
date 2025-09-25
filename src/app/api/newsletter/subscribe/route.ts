@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         .from("subscribers")
         .upsert({ email: normalized, ip: ip || null, user_agent: userAgent }, { onConflict: "email" });
       if (error) {
-        const msg = (error as any)?.message || "Subscription failed";
+        const msg = typeof (error as { message?: string })?.message === "string" ? error.message : "Subscription failed";
         return NextResponse.json({ error: msg }, { status: 500 });
       }
       return NextResponse.json({ ok: true });
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
     if (error) {
       // Unique violation or other DB error
-      const msg = (error as any)?.message || "Subscription failed";
+      const msg = typeof (error as { message?: string })?.message === "string" ? error.message : "Subscription failed";
       return NextResponse.json({ error: msg }, { status: 500 });
     }
 

@@ -140,7 +140,7 @@ export function TestimonialsCarousel() {
     const amount = CARD * dir;
     setOffset((prev) => {
       const half = Math.max(1, Math.ceil(marquee.length / 2)) * CARD;
-      let next = prev + amount;
+      const next = prev + amount;
       // wrap into [-half, 0)
       let wrapped = next % half;
       if (wrapped > 0) wrapped -= half;

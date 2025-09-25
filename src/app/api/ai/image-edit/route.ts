@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     const model = String(form.get("model") || "qwen/qwen-image-edit");
     const file = form.get("image");
 
-    if (!file || typeof (file as any).stream !== "function") {
+    if (!file || !(file instanceof Blob)) {
       return NextResponse.json({ error: "Image file is required." }, { status: 400 });
     }
 
@@ -58,12 +58,12 @@ export async function POST(req: Request) {
       input = {
         prompt: prompt ||
           "Change the backdrop to a beautiful parisian style vintage cafe. Natural lighting, cinematic mood.",
-        image_input: [file as any],
+        image_input: [file],
         output_format: "jpg",
       } as Record<string, unknown>;
     } else if (model === "qwen/qwen-image-edit") {
       input = {
-        image: file as any,
+        image: file,
         prompt: prompt || "Enhance this photo with natural lighting and cinematic tone.",
         go_fast: false,
         aspect_ratio: "match_input_image",
@@ -74,19 +74,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unsupported model." }, { status: 400 });
     }
 
-    const output: any = await replicate.run(model, { input });
+    const output: unknown = await replicate.run(model, { input });
 
     const urls: string[] = [];
     const pushIfUrl = (v: unknown) => {
       if (!v) return;
       if (typeof v === "string" && /^https?:\/\//.test(v)) urls.push(v);
       else if (typeof v === "object") {
-        const anyV = v as any;
-        if (typeof anyV.url === "string") urls.push(anyV.url);
-        else if (typeof anyV.url === "function") {
+        const obj = v as Record<string, unknown>;
+        const u = obj?.url as unknown;
+        if (typeof u === "string") urls.push(u);
+        else if (typeof u === "function") {
           try {
-            const u = anyV.url();
-            if (typeof u === "string") urls.push(u);
+            const res = (u as () => unknown)();
+            if (typeof res === "string") urls.push(res);
           } catch {}
         }
       }
