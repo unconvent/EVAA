@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="420" viewBox="0 0 1024 420" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0e101b"/>
+      <stop offset="100%" stop-color="#0b0e17"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="rgba(6,8,18,0.45)"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="420" rx="28" fill="url(#g)"/>
+  <!-- Header bar -->
+  <rect x="48" y="36" width="928" height="40" rx="12" fill="#13182a" stroke="rgba(255,255,255,0.08)"/>
+  <circle cx="68" cy="56" r="6" fill="#ff7e39"/>
+  <circle cx="86" cy="56" r="6" fill="#ffd166"/>
+  <circle cx="104" cy="56" r="6" fill="#06d6a0"/>
+
+  <!-- Three pricing cards -->
+  <g filter="url(#shadow)">
+    <rect x="72" y="108" width="264" height="260" rx="22" fill="#0f1426" stroke="rgba(255,255,255,0.12)"/>
+    <rect x="380" y="92" width="264" height="292" rx="22" fill="#121834" stroke="rgba(255,255,255,0.18)"/>
+    <rect x="688" y="108" width="264" height="260" rx="22" fill="#0f1426" stroke="rgba(255,255,255,0.12)"/>
+  </g>
+
+  <!-- Left card content -->
+  <text x="104" y="156" fill="#fff" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="18" font-weight="600">FREE</text>
+  <text x="104" y="190" fill="rgba(255,255,255,0.7)" font-size="12">Get started</text>
+  <text x="104" y="232" fill="#fff" font-size="32" font-weight="700">$0<span fill="rgba(255,255,255,0.6)" font-size="14">/mo</span></text>
+  <rect x="96" y="260" width="216" height="40" rx="12" fill="rgba(255,255,255,0.06)"/>
+
+  <!-- Middle card content (highlight) -->
+  <text x="412" y="140" fill="#fff" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="18" font-weight="700">PRO</text>
+  <text x="412" y="176" fill="rgba(255,255,255,0.75)" font-size="12">Most popular</text>
+  <text x="412" y="224" fill="#fff" font-size="36" font-weight="800">$19<span fill="rgba(255,255,255,0.65)" font-size="14">/mo</span></text>
+  <rect x="404" y="254" width="216" height="46" rx="14" fill="#ff7e39"/>
+  <text x="465" y="283" fill="#fff" font-size="14" font-weight="700">Choose PRO</text>
+
+  <!-- Right card content -->
+  <text x="720" y="156" fill="#fff" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="18" font-weight="600">LEGENDARY</text>
+  <text x="720" y="190" fill="rgba(255,255,255,0.7)" font-size="12">Everything maxed</text>
+  <text x="720" y="232" fill="#fff" font-size="32" font-weight="700">$49<span fill="rgba(255,255,255,0.6)" font-size="14">/mo</span></text>
+  <rect x="712" y="260" width="216" height="40" rx="12" fill="rgba(255,255,255,0.06)"/>
+</svg>

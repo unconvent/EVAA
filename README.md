@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Boilerplate SaaS stack: Next.js App Router + Supabase Auth + Stripe Subscriptions. Ready for Vercel.
 
-## Getting Started
+## Setup
 
-First, run the development server:
+1) Create a Supabase project and configure Google OAuth
+- In Supabase Auth > URL config, set Site URL to your Vercel domain and `http://localhost:3000` for local.
+- Enable Google provider and set redirect to `/auth/callback`.
 
+2) Create database tables
+- Run the SQL in `supabase/schema.sql` in the SQL editor.
+  - This creates profiles, subscriptions, RLS, and auto-assigns every new user a perpetual Free plan (inserted on signup).
+
+3) Stripe setup
+- Create two products with recurring prices (monthly and yearly) for PRO and LEGENDARY.
+- Copy the Price IDs to the env vars below.
+- Create a webhook endpoint in Stripe pointing to `/api/webhooks/stripe` and add the signing secret.
+
+4) Env vars
+- Copy `.env.local.example` to `.env.local` and fill:
+  - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY` (server-only)
+  - `NEXT_PUBLIC_APP_URL` (e.g. http://localhost:3000)
+  - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+  - `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_YEARLY`
+  - `STRIPE_PRICE_LEGENDARY_MONTHLY`, `STRIPE_PRICE_LEGENDARY_YEARLY`
+  - `TOGETHER_API_KEY` (Together AI key for the subject line generator)
+
+5) Run locally
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 and sign in with Google, test checkout and billing portal.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy to Vercel
+- Import this project in Vercel.
+- Add the same env vars in Vercel Project Settings.
+- Add a Stripe webhook endpoint for your production domain `/api/webhooks/stripe`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+- Dashboard has demo endpoints: `Pro Feature` and `Legendary Feature` gated by subscription.
+- Pricing page triggers Stripe Checkout; Billing opens the Stripe Customer Portal.
+- Dashboard also exposes an "AI Subject Line Studio" at `/dashboard/subject-lines` that calls Together AI for 12 high-converting subject lines with plan-based cooldowns (Free 3h · Pro 3m · Legendary 30s).
