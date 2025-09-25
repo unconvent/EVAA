@@ -137,9 +137,13 @@ If all of those steps work, your local environment matches production and you ar
   - Founders badge (unique avatars), larger logo, and a “Let’s Go” CTA for quick sign‑in.
   - Sliding logo carousel that reads images from `public/logos`.
   - Benefits section (“A Boilerplate / That Drives Results”) and a “BoilerKitt at a Glance” grid.
+  - Testimonials marquee with looping, pause/play, arrow controls, equal‑height cards, and gold star ratings.
+  - Second testimonials section + end‑page CRO block with wireframe visual and CTA.
 
 - Pricing UX
   - If a signed‑out user clicks a plan on `/pricing`, the page shows “You must be signed in to upgrade your account.”
+  - Example pricing now includes an urgency banner and a live 48‑hour countdown (persists in localStorage).
+  - LEGENDARY plan is highlighted with a “Recommended” badge; buttons have a consistent style across plans.
 
 - AI demos
   - Subject Line Studio (Together AI) with server‑enforced cooldowns (Free 3h · Pro 3m · Legendary 30s).
@@ -148,6 +152,7 @@ If all of those steps work, your local environment matches production and you ar
 
 - Secrets
   - All AI and Stripe keys are server‑only env vars (`process.env` in API routes). `.env.local` is git‑ignored.
+  - A `LICENSE.md` (MIT) is included; BoilerKitt is free and open source.
 
 ---
 
@@ -168,6 +173,7 @@ If your project predates the table, run the “Subscribers” SQL from `supabase
 ## Example Pricing (Demo)
 
 The pricing section demonstrates Stripe Checkout, intervals, and plan gates. BoilerKitt itself is free and open source; swap the price IDs to match your own product when you use this template.
+It now includes an urgency banner with a live countdown. The countdown persists locally so it doesn’t reset on refresh.
 
 ---
 
@@ -184,6 +190,21 @@ The pricing section demonstrates Stripe Checkout, intervals, and plan gates. Boi
 Above the fold: 4–6 word headline • 3 benefit bullets • 1 CTA • screenshot • trust
 
 Body: Benefits trio • “BoilerKitt at a Glance” grid • testimonials carousel • Example Pricing (Demo) • FAQs • final CRO section + CTA
+
+---
+
+## Docs page
+
+- The docs page `/docs` renders two sources:
+  - `WHAT-THIS-BOILERPLATE-CAN-DO.md` (Overview)
+  - `GUIDE.md` (this guide)
+- It also clones the Frequently Asked Questions from the homepage and includes a floating quick‑nav widget (Overview / Guide / FAQs) for smooth scrolling.
+
+---
+
+## License
+
+BoilerKitt ships with an MIT license in `LICENSE.md`. You can use it commercially, modify it, and redistribute. Please keep the license file with your distributions.
 
 ---
 

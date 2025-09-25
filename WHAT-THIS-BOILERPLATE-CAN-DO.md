@@ -24,6 +24,10 @@ New in this version
 - Image Editor using Replicate (`qwen/qwen-image-edit` and `google/nano-banana`) with model selection. Legendary only.
 - Pricing UX guards sign‑in on upgrade, with a clear message when not signed in.
 - Homepage polish: founders badge with unique avatars, logo carousel from `public/logos`, and a “Let’s Go” CTA that triggers sign‑in.
+ - Testimonials marquee with looping + controls, equal‑height cards, and gold stars.
+ - A second testimonials section and a final CRO block with a wireframe visual and CTA.
+ - Example Pricing (Demo) now includes an urgency banner with a live countdown and a highlighted LEGENDARY “Recommended” badge.
+ - Docs page integrates the Overview and Guide files with a floating quick‑nav widget and cloned FAQs.
  - Benefit cards that clearly state outcomes (Ship in days, Lower costs, Production‑ready)
  - Testimonials carousel (avatars from `public/avatars`), FAQs, and a final CRO section with a visual and CTA
 
@@ -74,3 +78,7 @@ Newsletter capture
 - Anti‑bot measures without external CAPTCHA: honeypot, time gate (≥ 2s), and a small math challenge.
 
 In short: this boilerplate handles sign‑in, plans, payments, and real AI features with plan limits. You can add your own features on top without rebuilding the basics.
+
+License
+
+This project is MIT‑licensed (see `LICENSE.md`). It’s free and open source — and will remain so.
