@@ -85,7 +85,7 @@ export async function POST(req: Request) {
           supabase,
           supabaseUserId,
           customerId,
-          email: sub.customer_email ?? undefined,
+          email: undefined,
         });
 
         const resolvedPlan = planInfo?.plan ?? slugFromNickname(price?.nickname) ?? "free";
