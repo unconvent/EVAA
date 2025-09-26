@@ -147,6 +147,18 @@ export default function DashboardPage() {
         <h1 className="text-4xl font-semibold tracking-tight text-white">
           Welcome, {userEmail}
         </h1>
+        {process.env.NEXT_PUBLIC_GITHUB_URL ? (
+          <div className="mt-4">
+            <a
+              href={process.env.NEXT_PUBLIC_GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/15"
+            >
+              View on GitHub
+            </a>
+          </div>
+        ) : null}
         <p className="mt-2 text-[var(--muted)]">
           Current plan: <span className="text-white">{planDescriptor}</span>{" "}
           <span className="uppercase tracking-wider text-[var(--accent)]">

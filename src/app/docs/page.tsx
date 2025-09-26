@@ -15,6 +15,14 @@ export default async function DocsPage() {
 
   const overview = await read("WHAT-THIS-BOILERPLATE-CAN-DO.md");
   const guide = await read("GUIDE.md");
+  const playbooks = [
+    { id: "playbooks-overview", title: "Playbooks Overview", file: "build-ship-launch-playbooks/README.md" },
+    { id: "playbooks-outline", title: "Project Outline & Architecture", file: "build-ship-launch-playbooks/outline.md" },
+    { id: "playbooks-design", title: "Design System & UI Standards", file: "build-ship-launch-playbooks/design.md" },
+    { id: "playbooks-interaction", title: "Interaction & UX Playbook", file: "build-ship-launch-playbooks/interaction.md" },
+    { id: "playbooks-todo", title: "Project TODOs", file: "build-ship-launch-playbooks/todo.md" },
+  ] as const;
+  const playbookContents = await Promise.all(playbooks.map(async p => ({ ...p, content: await read(p.file) })));
 
   const faqs: FaqItem[] = [
     {
@@ -51,6 +59,8 @@ export default async function DocsPage() {
           <span>•</span>
           <a href="#guide" className="hover:text-white">Guide</a>
           <span>•</span>
+          <a href="#playbooks" className="hover:text-white">Playbooks</a>
+          <span>•</span>
           <a href="#faq" className="hover:text-white">FAQs</a>
         </nav>
       </header>
@@ -63,6 +73,19 @@ export default async function DocsPage() {
       <section id="guide" className="mt-10 rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_24px_60px_rgba(6,8,18,0.45)]">
         <h2 className="text-2xl font-semibold text-white">Guide</h2>
         <pre className="mt-4 whitespace-pre-wrap text-sm text-[var(--muted)]">{guide}</pre>
+      </section>
+
+      <section id="playbooks" className="mt-10 rounded-3xl border border-white/10 bg-black/30 p-6 shadow-[0_24px_60px_rgba(6,8,18,0.45)]">
+        <h2 className="text-2xl font-semibold text-white">Playbooks</h2>
+        <p className="mt-2 text-sm text-[var(--muted)]">Action-oriented guides for building and shipping. Edit files under <code>build-ship-launch-playbooks/</code>.</p>
+        <div className="mt-6 space-y-8">
+          {playbookContents.map(pb => (
+            <div key={pb.id} id={pb.id}>
+              <h3 className="text-lg font-semibold text-white">{pb.title}</h3>
+              <pre className="mt-3 whitespace-pre-wrap text-sm text-[var(--muted)]">{pb.content}</pre>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section id="faq" className="mt-12">

@@ -217,6 +217,16 @@ export default function Home() {
                 ))}
               </div>
             </div>
+            {process.env.NEXT_PUBLIC_GITHUB_URL ? (
+              <a
+                href={process.env.NEXT_PUBLIC_GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-4 inline-flex items-center justify-center rounded-[24px] border border-white/20 bg-white/10 px-6 py-3 text-base font-semibold text-white/90 transition hover:bg-white/15"
+              >
+                View on GitHub
+              </a>
+            ) : null}
           </div>
 
           {/* Sliding logo carousel */}

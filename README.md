@@ -1,10 +1,23 @@
 ## Live Demo
 
-You can see the boilerplate live in action at:
-
-https://boiler-kitt.vercel.app/
+Live site: https://boiler-kitt.vercel.app/
 
 Boilerplate SaaS stack: Next.js App Router + Supabase Auth + Stripe Subscriptions. Ready for Vercel.
+
+## Getting Started (Quick)
+
+1. Clone this repo and copy envs
+   - `cp app/.env.local.example app/.env.local` and fill values.
+2. Run the Supabase schema once
+   - Paste `app/supabase/schema.sql` into Supabase SQL Editor → Run.
+3. Configure Google OAuth and Stripe (Test mode)
+   - Follow the zero‑to‑prod guide in `app/GUIDE.md`.
+4. Start locally
+   - `npm install && npm run dev` → open http://localhost:3000
+
+Deploy to Vercel:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USER/YOUR_REPO&project-name=boilerkitt&repository-name=boilerkitt)
 
 ## Setup
 
@@ -42,6 +55,10 @@ Open http://localhost:3000 and sign in with Google, test checkout and billing po
 - Import this project in Vercel.
 - Add the same env vars in Vercel Project Settings.
 - Add a Stripe webhook endpoint for your production domain `/api/webhooks/stripe`.
+
+## Playbooks (Build → Ship → Launch)
+- Action‑oriented docs live in `app/build-ship-launch-playbooks/` and are also rendered at `/docs` under Playbooks.
+- Start with `outline.md`, then use `design.md`, `interaction.md`, and drive execution with `todo.md`.
 
 ## Notes
 - Dashboard has demo endpoints: `Pro Feature` and `Legendary Feature` gated by subscription.
