@@ -27,6 +27,24 @@ Purpose: Define end-to-end flows, states, and UX standards so the team ships con
 - Dashboard action → `/api/portal` → Stripe customer portal.
 - On return, reflect status changes on dashboard.
 
+5) Subject Line Studio (Text Generation)
+- Entry point: Dashboard → Subject Line Studio card.
+- Server route enforces cooldowns by plan; UI shows remaining time.
+- Flow: User enters prompt → submit → streamed results (12 lines) → copy/save.
+- Errors: show concise message; suggest waiting for cooldown or upgrading.
+
+6) Simple Image Generation
+- Entry point: Dashboard → Image Generation card (Pro & Legendary).
+- Flow: Prompt → POST to Replicate model → show generated image(s) → allow retry.
+- Gating: Free users see upsell message; Pro/Legendary proceed.
+- Errors: network/model errors surfaced as friendly alerts; allow retry.
+
+7) Image Editor (Legendary)
+- Entry point: Dashboard → Image Editor card.
+- Flow: Upload source image → prompt transform → call server route → display result.
+- Gating: Only Legendary. Others see clear 402/upgrade path.
+- Errors: validate file type/size; show helpful feedback and keep original.
+
 ## States & Edge Cases
 - Signed out → any gated action prompts sign-in.
 - Missing envs → show guarded alerts, no crashes (e.g., auth/Stripe not configured).
