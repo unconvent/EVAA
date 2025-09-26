@@ -1,3 +1,9 @@
+## Live Demo
+
+You can see the boilerplate live in action at:
+
+https://boiler-kitt.vercel.app/
+
 Boilerplate SaaS stack: Next.js App Router + Supabase Auth + Stripe Subscriptions. Ready for Vercel.
 
 ## Setup
