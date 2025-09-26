@@ -2,6 +2,87 @@
 
 Below are the questions people usually ask the first time they run this stack. Every answer is written in plain English and includes the exact steps you can follow.
 
+---
+
+# Zero‑to‑Production on Vercel (Step‑by‑Step)
+
+Follow this exact checklist to deploy BoilerKitt on Vercel with Google sign‑in (Supabase), Stripe subscriptions, and working social previews.
+
+## 0) Prerequisites
+- Accounts: GitHub (or GitLab), Supabase, Stripe (Test mode), Google Cloud Platform
+- Optional: Node 18+ locally
+
+## 1) Create Supabase project and run schema
+1. Create a project at https://supabase.com/.
+2. Project Settings → API: copy
+   - Project URL → `NEXT_PUBLIC_SUPABASE_URL`
+   - anon public key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - service role key → `SUPABASE_SERVICE_ROLE_KEY` (server‑only)
+3. Supabase Studio → SQL Editor → run the contents of `app/supabase/schema.sql` once.
+
+## 2) Configure Google sign‑in
+1. Google Cloud Console → APIs & Services → OAuth consent screen → External → Create → fill basics → Save.
+2. APIs & Services → Credentials → Create credentials → OAuth client ID:
+   - Application type: Web application
+   - Authorized JavaScript origins:
+     - `http://localhost:3000`
+     - `https://YOUR_DOMAIN` (e.g. `https://boiler-kitt.vercel.app`)
+   - Authorized redirect URIs:
+     - `https://<YOUR_SUPABASE_REF>.supabase.co/auth/v1/callback`
+   - Create → copy Client ID and Client secret.
+3. Supabase → Authentication → Providers → Google → enable → paste Client ID/Secret → Save.
+4. Supabase → Authentication → URL Configuration:
+   - Site URL: `https://YOUR_DOMAIN`
+   - Redirect URLs: add `http://localhost:3000/auth/callback` and `https://YOUR_DOMAIN/auth/callback` → Save.
+
+Notes
+- The app signs in with `redirectTo: ${window.location.origin}/auth/callback`, so it works on localhost, previews, and production.
+
+## 3) Set Vercel environment variables (Production and Preview)
+Auth/App
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_APP_URL` = `https://YOUR_DOMAIN`
+
+Stripe
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET` (from Section 5)
+- Optional (recommended): `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_YEARLY`, `STRIPE_PRICE_LEGENDARY_MONTHLY`, `STRIPE_PRICE_LEGENDARY_YEARLY`
+
+Security
+- Put secrets in Vercel envs (do not commit them). Rotate any secrets previously committed.
+
+## 4) Deploy and verify sign‑in
+1. Deploy via Vercel.
+2. Open the site → click Sign in → choose Google account → you should land on `/dashboard`.
+   - If redirected to `localhost`, re‑check Supabase Authentication → URL Configuration.
+
+## 5) Stripe products and webhook (Test mode)
+1. Stripe → Products: create PRO and LEGENDARY with Monthly and Yearly recurring prices. Copy each `price_...` ID and add to Vercel envs (or let the app auto‑create test prices at runtime on Vercel).
+2. Stripe → Developers → Webhooks → Add endpoint:
+   - URL: `https://YOUR_DOMAIN/api/webhooks/stripe`
+   - Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
+   - Save → copy the “Signing secret”.
+3. Vercel envs: set `STRIPE_WEBHOOK_SECRET` to that secret → Redeploy.
+4. Test: on `/pricing` choose a plan → complete checkout with `4242 4242 4242 4242` test card → redirected to `/dashboard?checkout=success`.
+5. Verify: Stripe → Webhooks → your endpoint → Logs show 200; Supabase `subscriptions` upserts a row; `profiles` updates `plan`, `plan_status`, `plan_interval`, `stripe_customer_id`.
+
+If it doesn’t update
+- Ensure `SUPABASE_SERVICE_ROLE_KEY` and `STRIPE_WEBHOOK_SECRET` are set in Vercel.
+- Confirm the endpoint URL is correct and in Test mode.
+- Resend the last event from Stripe Logs after fixing envs.
+
+## 6) Social previews (OG/Twitter)
+- Programmatic images are included:
+  - Open Graph: `https://YOUR_DOMAIN/opengraph-image`
+  - Twitter: `https://YOUR_DOMAIN/twitter-image`
+- Metadata is configured in `app/src/app/layout.tsx`. Set `NEXT_PUBLIC_APP_URL` so relative image URLs become absolute.
+- Prefer a static PNG? Add `public/og.png` (1200×630) and point metadata to it.
+
+---
+
 ## 1. What do I need before touching the code?
 Make sure you have:
 - A GitHub (or GitLab) account to host the repo.
