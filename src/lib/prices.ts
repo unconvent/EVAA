@@ -12,19 +12,42 @@ const ENV_MAP: Record<string, string | undefined> = {
 };
 
 const LOCAL_FILE = path.join(process.cwd(), "local", "stripe.dev.json");
+const IS_READ_ONLY_FS = Boolean(process.env.VERCEL);
+let memoryMap: Record<string, string> | null = null;
 
-export async function getPriceIdFor(plan: string, interval: Interval): Promise<string | undefined> {
-  // 1) Environment variables
-  const fromEnv = ENV_MAP[`${plan}_${interval}`];
+export async function getPriceIdFor(
+  plan: string,
+  interval: Interval
+): Promise<string | undefined> {
+  const key = `${plan}_${interval}`;
+
+  // 1) Prefer explicit env configuration
+  const fromEnv = ENV_MAP[key];
   if (fromEnv) return fromEnv;
 
-  // 2) Local file cache
-  const fromFile = await readLocalPrice(`${plan}_${interval}`);
-  if (fromFile) return fromFile;
+  // 2) In-memory cache (survives within a single serverless instance)
+  if (memoryMap && memoryMap[key]) return memoryMap[key];
 
-  // 3) Create dev prices if missing
-  await ensureDevPrices();
-  return readLocalPrice(`${plan}_${interval}`);
+  // 3) Local file cache (skip on read-only FS like Vercel)
+  if (!IS_READ_ONLY_FS) {
+    const fromFile = await readLocalPrice(key).catch(() => undefined);
+    if (fromFile) return fromFile;
+  }
+
+  // 4) Find or create prices via Stripe API and cache in-memory
+  const ensured = await ensureDevPricesMap();
+  memoryMap = ensured; // cache for this runtime
+
+  // 5) Optionally persist locally for dev machines
+  if (!IS_READ_ONLY_FS) {
+    try {
+      await writeLocalPrices(ensured);
+    } catch {
+      // ignore write errors in environments without writable FS
+    }
+  }
+
+  return ensured[key];
 }
 
 export async function getPlanIntervalFromPriceId(
@@ -37,6 +60,15 @@ export async function getPlanIntervalFromPriceId(
   if (reverseEnv[priceId]) {
     const [plan, interval] = reverseEnv[priceId].split("_");
     return { plan, interval: interval === "year" ? "year" : "month" };
+  }
+
+  if (memoryMap) {
+    const matched = Object.entries(memoryMap).find(([, val]) => val === priceId);
+    if (matched) {
+      const [key] = matched;
+      const [plan, interval] = key.split("_");
+      return { plan, interval: interval === "year" ? "year" : "month" };
+    }
   }
 
   const localMap = await readLocalMap();
@@ -60,6 +92,7 @@ async function readLocalPrice(key: string): Promise<string | undefined> {
 }
 
 async function readLocalMap(): Promise<Record<string, string>> {
+  if (IS_READ_ONLY_FS) return {};
   try {
     const buf = await fs.readFile(LOCAL_FILE, "utf8");
     return JSON.parse(buf) as Record<string, string>;
@@ -69,29 +102,27 @@ async function readLocalMap(): Promise<Record<string, string>> {
 }
 
 async function writeLocalPrices(map: Record<string, string>) {
+  if (IS_READ_ONLY_FS) return;
   await fs.mkdir(path.dirname(LOCAL_FILE), { recursive: true });
   await fs.writeFile(LOCAL_FILE, JSON.stringify(map, null, 2), "utf8");
 }
 
-async function ensureDevPrices() {
+async function ensureDevPricesMap(): Promise<Record<string, string>> {
   const stripe = getStripe();
 
-  // If any env mappings exist, prefer them and store to file for completeness
+  // If env mappings exist, use them
   const current: Record<string, string> = {};
   for (const k of Object.keys(ENV_MAP)) {
     const v = ENV_MAP[k];
     if (v) current[k] = v;
   }
-
-  // If all present, just write and exit
   if (
     current.pro_month &&
     current.pro_year &&
     current.legendary_month &&
     current.legendary_year
   ) {
-    await writeLocalPrices(current);
-    return;
+    return current;
   }
 
   // Create products and recurring prices (USD) suitable for development
@@ -101,7 +132,11 @@ async function ensureDevPrices() {
   const priceMap: Record<string, string> = { ...current };
 
   // Helper to create a price if not already present
-  async function ensurePrice(productId: string, unit_amount: number, interval: Interval) {
+  async function ensurePrice(
+    productId: string,
+    unit_amount: number,
+    interval: Interval
+  ) {
     const list = await stripe.prices.list({ product: productId, active: true, limit: 100 });
     const found = list.data.find(
       (p) => p.recurring?.interval === interval && p.unit_amount === unit_amount
@@ -125,7 +160,7 @@ async function ensureDevPrices() {
   priceMap.legendary_year =
     priceMap.legendary_year || (await ensurePrice(products.legendary, 49000, "year"));
 
-  await writeLocalPrices(priceMap);
+  return priceMap;
 }
 
 async function ensureProducts(stripe: ReturnType<typeof getStripe>) {
