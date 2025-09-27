@@ -239,7 +239,7 @@ export default function Home() {
           />
           {/* CTA moved below feature cards */}
 
-          <div className="mt-16 text-center">
+          <div id="services" className="mt-16 text-center">
             <h2 className="text-6xl font-semibold leading-tight tracking-tight sm:text-7xl">
               <span className="block">A Boilerplate</span>
               <span className="block">That <span className="text-[var(--accent)]">Drives Results</span></span>
@@ -367,7 +367,7 @@ export default function Home() {
       </section>
 
       {/* More Testimonials */}
-      <section className="border-t border-white/10 bg-transparent">
+      <section id="case-studies" className="border-t border-white/10 bg-transparent">
         <div className="mx-auto max-w-6xl px-4 py-20">
           <h2 className="text-center text-6xl font-semibold leading-tight tracking-tight text-white sm:text-7xl">
             More From Builders

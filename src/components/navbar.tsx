@@ -85,9 +85,9 @@ export function Navbar() {
           <nav className="hidden items-center justify-center gap-6 whitespace-nowrap md:flex">
             {[
               { label: "Our Services", href: "/#services" },
-              { label: "Pricing", href: "/pricing" },
+              { label: "Pricing", href: "#pricing" },
               { label: "FAQ", href: "/#faq" },
-              { label: "Case Studies", href: "/#case-studies" },
+              { label: "Case Studies", href: "#case-studies" },
               { label: "Docs", href: "/docs" },
             ].map((item) => homeNavLink(item.label, item.href))}
           </nav>
