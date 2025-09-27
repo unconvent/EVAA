@@ -1,11 +1,11 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function TwitterImage() {
-  const gradient = "linear-gradient(135deg, #0c1325 0%, #5B7CFF 50%, #FF4D00 100%)";
+  const background = "#0c1325";
   return new ImageResponse(
     (
       <div
@@ -17,13 +17,13 @@ export default function TwitterImage() {
           justifyContent: "center",
           alignItems: "flex-start",
           padding: 64,
-          background: gradient,
+          background,
         }}
       >
         <div
           style={{
             color: "#fff",
-            fontSize: 60,
+            fontSize: 56,
             fontWeight: 800,
             textShadow: "0 8px 24px rgba(0,0,0,0.25)",
           }}
@@ -45,4 +45,3 @@ export default function TwitterImage() {
     { ...size }
   );
 }
-

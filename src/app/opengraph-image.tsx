@@ -1,11 +1,11 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function OpenGraphImage() {
-  const gradient = "linear-gradient(135deg, #5B7CFF 0%, #FF4D00 100%)";
+  const background = "#0c1325";
   return new ImageResponse(
     (
       <div
@@ -17,7 +17,7 @@ export default function OpenGraphImage() {
           justifyContent: "center",
           alignItems: "flex-start",
           padding: 64,
-          background: gradient,
+          background,
         }}
       >
         <div
@@ -25,7 +25,7 @@ export default function OpenGraphImage() {
             display: "inline-flex",
             alignItems: "center",
             gap: 16,
-            background: "rgba(0,0,0,0.2)",
+            background: "rgba(255,255,255,0.08)",
             color: "#fff",
             borderRadius: 9999,
             padding: "8px 16px",
@@ -40,10 +40,10 @@ export default function OpenGraphImage() {
           style={{
             marginTop: 24,
             color: "#fff",
-            fontSize: 68,
+            fontSize: 64,
             fontWeight: 800,
             lineHeight: 1.1,
-            textShadow: "0 8px 24px rgba(0,0,0,0.25)",
+            textShadow: "0 6px 18px rgba(0,0,0,0.25)",
           }}
         >
           An amazing, FREE, Open‑source SaaS Boilerplate
@@ -63,4 +63,3 @@ export default function OpenGraphImage() {
     { ...size }
   );
 }
-
