@@ -25,13 +25,13 @@ export const metadata: Metadata = {
     description,
     url: "/",
     siteName: "BoilerKitt",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+    images: [{ url: "/OG-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/twitter-image"],
+    images: ["/OG-image.png"],
   },
 };
 
