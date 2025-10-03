@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local-only workspace
 local/
+\
+# project-local files
+/guit.html

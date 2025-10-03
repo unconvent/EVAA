@@ -549,8 +549,8 @@ export default function Home() {
               <div>
                 <h4 className="text-sm font-semibold text-white">Legal</h4>
                 <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
-                  <li><a href="#" className="hover:text-white">Terms</a></li>
-                  <li><a href="#" className="hover:text-white">Privacy</a></li>
+                  <li><a href="/terms" className="hover:text-white">Terms</a></li>
+                  <li><a href="/privacy" className="hover:text-white">Privacy</a></li>
                   <li><a href="#" className="hover:text-white">License (MIT)</a></li>
                 </ul>
               </div>
