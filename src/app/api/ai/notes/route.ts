@@ -257,7 +257,8 @@ export async function POST(req: Request) {
         }
       } catch (e) {
         console.error("Pollinations stream error", e);
-        await writer.abort(e as any);
+        const reason = e instanceof Error ? e : new Error(String(e));
+        await writer.abort(reason);
         return;
       }
       await closeWriter();
