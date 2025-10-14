@@ -24,7 +24,6 @@ export function ViralImagesStudio({ plan }: Props) {
   const [lessVirality, setLessVirality] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [streaming, setStreaming] = useState(false);
-  const [promptPreview, setPromptPreview] = useState<string | null>(null);
   const [images, setImages] = useState<(string | null)[]>([null, null]);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [retryAt, setRetryAt] = useState<Date | null>(null);
@@ -38,7 +37,6 @@ export function ViralImagesStudio({ plan }: Props) {
     setError(null);
     setRetryAt(null);
     setImages([null, null]);
-    setPromptPreview(null);
 
     if (!title.trim() || !style.trim()) {
       setError("Please provide a title and select a style.");
@@ -98,9 +96,7 @@ export function ViralImagesStudio({ plan }: Props) {
           if (!payload) continue;
           try {
             const json = JSON.parse(payload);
-            if (json.status === "prompt") {
-              setPromptPreview(json.prompt || null);
-            } else if (json.status === "success" && typeof json.index === "number" && json.imageUrl) {
+            if (json.status === "success" && typeof json.index === "number" && json.imageUrl) {
               setImages((prev) => {
                 const next = [...prev];
                 next[Math.max(0, Math.min(1, json.index))] = String(json.imageUrl);
@@ -215,14 +211,7 @@ export function ViralImagesStudio({ plan }: Props) {
         </button>
       </section>
 
-      {promptPreview ? (
-        <section className="mt-6">
-          <h2 className="text-lg font-semibold text-white">Prompt Preview</h2>
-          <div className="mt-3 whitespace-pre-wrap rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-[var(--muted)]">
-            {promptPreview}
-          </div>
-        </section>
-      ) : null}
+      {/* Prompt preview removed to avoid exposing backend prompt */}
 
       {(images[0] || images[1]) ? (
         <section className="mt-6">
