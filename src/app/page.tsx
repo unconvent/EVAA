@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Sparkles, Zap, Rocket, KeyRound, Lock, Webhook, LayoutDashboard, Timer, Image as ImageIcon, Wand2 } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Rocket, KeyRound, Lock, Webhook, LayoutDashboard, Timer, Image as ImageIcon, Wand2, X } from "lucide-react";
 import { Pricing } from "@/components/pricing";
 import { LogoCarousel } from "@/components/logo-carousel";
 import { TestimonialsCarousel } from "@/components/testimonials-carousel";
@@ -21,6 +21,7 @@ export default function Home() {
   const [challengeA, setChallengeA] = useState<number>(0);
   const [challengeB, setChallengeB] = useState<number>(0);
   const [challengeAns, setChallengeAns] = useState<string>("");
+  const [zoomSrc, setZoomSrc] = useState<string | null>(null);
 
   const handleGoToApp = useCallback(async () => {
     if (!supabase) {
@@ -93,50 +94,65 @@ export default function Home() {
   }, []);
   const featureBlocks = [
     {
-      icon: Zap,
-      title: "Supabase Auth",
-      description: "Production-ready auth with row-level security and instant profile sync.",
+      icon: Sparkles,
+      title: "Viral Substack Notes",
+      description: "AI‑crafted short‑form posts that hook readers and get shared.",
+    },
+    {
+      icon: ImageIcon,
+      title: "Viral Thumbnails & Images",
+      description: "Scroll‑stopping Substack images and thumbnails for higher CTR.",
+    },
+    {
+      icon: Wand2,
+      title: "High‑Open Titles & Subjects",
+      description: "Irresistible titles and email subjects tuned to your ICP.",
+    },
+    {
+      icon: KeyRound,
+      title: "Brand Voice Memory",
+      description: "Trains on your best content to stay on‑brand across channels.",
+    },
+    {
+      icon: Timer,
+      title: "Rapid A/B Testing",
+      description: "Test multiple hooks/titles fast to find winners before publishing.",
     },
     {
       icon: Rocket,
-      title: "Stripe Billing",
-      description: "Subscription-ready Stripe integration with Checkout, Portal, and webhooks.",
+      title: "One‑Click Publish",
+      description: "Streamline your flow to post everywhere in minutes, not hours.",
     },
-    {
-      icon: Sparkles,
-      title: "App Router",
-      description: "Modern Next.js architecture, React Server Components, and SSR baked in.",
-    },
-    { icon: KeyRound, title: "Google Sign‑in", description: "Let users sign in with Google in one click." },
-    { icon: Lock, title: "Plan‑Gated Features", description: "Limit features to Free, Pro, or Legendary with server checks." },
-    { icon: Webhook, title: "Stripe Webhooks Sync", description: "Plans and status stay in sync after upgrades or cancellations." },
-    { icon: LayoutDashboard, title: "Dashboard & Portal", description: "Show current plan and open Stripe’s portal to manage billing." },
-    { icon: Sparkles, title: "AI Subject Lines", description: "Generate 12 subject lines with Together AI and live streaming." },
-    { icon: Timer, title: "Smart Cooldowns", description: "Wait times depend on plan; enforced on the server and shown in the UI." },
-    { icon: ImageIcon, title: "Simple Image Gen", description: "Create high‑quality images from a prompt using Replicate." },
-    { icon: Wand2, title: "Image Editor (Legendary)", description: "Upload an image and transform it with a prompt (Legendary only)." },
   ];
 
   const faqs = [
     {
-      q: "Is BoilerKitt really free and open source?",
-      a: "Yes. It’s free and open source forever. Use it for personal or commercial projects, modify it, and ship your product without vendor lock‑in.",
+      q: "What does EVAA actually generate?",
+      a: "Viral short‑form content (Substack Notes), scroll‑stopping thumbnails/post images, and high‑open titles/email subjects tailored to your ICP.",
     },
     {
-      q: "Is this a hosted service or a codebase?",
-      a: "It’s a starter codebase. You run it locally, deploy it yourself, and bring your own Supabase/Stripe keys. The pricing page and plan logic are example code.",
+      q: "Do I own the content EVAA generates?",
+      a: "Yes. You own the outputs you generate with EVAA and can publish them on Substack, email, and social.",
     },
     {
-      q: "What’s included out of the box?",
-      a: "Google sign‑in, Supabase profiles + RLS, Stripe subscriptions with Checkout + Portal, plan gating, example AI features (Together AI + Replicate), and a polished Next.js UI.",
+      q: "How does EVAA learn my brand voice?",
+      a: "Upload or link your best posts. EVAA builds a lightweight voice memory so drafts stay on‑brand across titles, notes, and images.",
     },
     {
-      q: "Can I remove or change the AI features?",
-      a: "Absolutely. They’re examples to show server‑side gating and streaming. Keep them, swap the models, or delete them entirely.",
+      q: "What are the Free plan limits?",
+      a: "Notes: 1/day (includes 3 notes). Viral Images: 1/week (includes 3 images). Upgrade to increase limits and speed up iteration.",
     },
     {
-      q: "What happens after I click Let’s Go?",
-      a: "You sign in and land on the dashboard where you can try the sample features and explore the plan logic. In your fork you can replace this flow with your own onboarding.",
+      q: "Will EVAA post to Substack for me?",
+      a: "You keep full control. EVAA prepares optimized drafts, thumbnails, and titles; you publish with one click from your Substack.",
+    },
+    {
+      q: "Is my data private?",
+      a: "Yes. Your uploads are only used to improve your own results. Admin features require server‑side keys and respect RLS.",
+    },
+    {
+      q: "How do upgrades work?",
+      a: "Start on Free. When you’re ready, upgrade via Stripe Checkout. Plans unlock higher limits, faster cooldowns, and advanced features.",
     },
   ];
 
@@ -146,7 +162,7 @@ export default function Home() {
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(255,129,255,0.2)_0%,_rgba(12,14,29,0)_55%)]" />
         <div className="mx-auto max-w-6xl px-4 py-24 text-center">
           <div className="pill-tag mx-auto inline-flex items-center gap-2 px-4 py-1 text-xs uppercase tracking-wider">
-            <Sparkles size={14} /> <span className="font-semibold text-[var(--accent)]">FREE</span> Boilerplate SaaS ready for shipping
+            <Sparkles size={14} /> <span className="font-semibold text-[var(--accent)]">EVAA</span> AI Growth Engine for Creators
           </div>
           <div className="mx-auto mt-4 flex w-fit items-center gap-3 rounded-full bg-white/90 px-4 py-2 text-sm text-slate-800 shadow-[0_10px_30px_rgba(15,23,42,0.12)]">
             <div className="flex -space-x-2">
@@ -156,17 +172,16 @@ export default function Home() {
                 </span>
               ))}
             </div>
-            <span>+500 builders use boilerkitt to ship quality fast</span>
+            <span>creators use EVAA to grow & monetize their newsletters</span>
           </div>
           <h1 className="mt-8 text-6xl font-semibold leading-tight tracking-tight sm:text-7xl">
-            <span className="block">Ship you SaaS</span>
-            <span className="block">in <span className="text-[var(--accent)]">days</span>, not months</span>
+            <span className="block">Meet the AI Growth Engine</span>
+            <span className="block"><span className="text-[var(--accent)]">That Drives Results</span></span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-[var(--muted)]">
-            Authentication, billing, subscriptions, and a polished UI powered by Next.js, Supabase,
-            and Stripe. Iterate on your product while the fundamentals are ready on day one.
+            Join 65,000+ creators who've 2X'd their subscriber growth and tripled their revenue using our AI-powered growth engine.
           </p>
-          {/* Let's Go CTA (acts like Sign in) */}
+          {/* Primary CTA (acts like Sign in) */}
           <div className="mt-8 flex justify-center">
             <div className="group relative">
               <button
@@ -176,7 +191,7 @@ export default function Home() {
               >
                 {/* inner highlight */}
                 <span className="pointer-events-none absolute inset-0 rounded-[24px] ring-1 ring-white/10 shadow-inner [box-shadow:inset_0_10px_18px_rgba(255,255,255,0.2),inset_0_-6px_12px_rgba(0,0,0,0.12)]" />
-                <span className="relative">Let&apos;s Go</span>
+                <span className="relative">🚀 Start Making Viral Content - FREE Trial</span>
               </button>
               {/* Left squiggles */}
               <div className="pointer-events-none absolute left-[-84px] top-1/2 hidden -translate-y-1/2 flex-col items-end gap-3 opacity-0 transition-all duration-300 group-hover:-translate-x-1 group-hover:opacity-100 md:flex" style={{ color: 'var(--accent-secondary)' }}>
@@ -217,16 +232,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            {process.env.NEXT_PUBLIC_GITHUB_URL ? (
-              <a
-                href={process.env.NEXT_PUBLIC_GITHUB_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ml-4 inline-flex items-center justify-center rounded-[24px] border border-white/20 bg-white/10 px-6 py-3 text-base font-semibold text-white/90 transition hover:bg-white/15"
-              >
-                View on GitHub
-              </a>
-            ) : null}
+            {/* Removed GitHub button */}
           </div>
 
           {/* Sliding logo carousel */}
@@ -241,30 +247,65 @@ export default function Home() {
 
           <div id="services" className="mt-16 text-center">
             <h2 className="text-6xl font-semibold leading-tight tracking-tight sm:text-7xl">
-              <span className="block">A Boilerplate</span>
+              <span className="block">An AI-Powered Growth Engine</span>
               <span className="block">That <span className="text-[var(--accent)]">Drives Results</span></span>
             </h2>
           </div>
           {/* Benefits: highlight outcomes, not features */}
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
             <div className="relative overflow-hidden glass-card p-6 text-left ring-1 ring-[var(--accent)]/20 border border-white/10 bg-[#121a2d]/90 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_24px_60px_rgba(6,8,18,0.55)] before:pointer-events-none before:absolute before:inset-0 before:content-[''] before:bg-[radial-gradient(120%_120%_at_80%_-10%,_var(--accent)/14,_transparent_60%)]">
-              <h3 className="text-lg font-semibold text-white">Ship in Days</h3>
-              <p className="mt-2 text-sm text-[var(--muted)]">Auth, billing, plan gates, and example AI features are pre‑wired so you can launch weeks faster.</p>
+              <h3 className="text-lg font-semibold text-white">Viral Short‑Form Content</h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">Generate Substack Notes that hook readers and get shared. On‑brand drafts in seconds tailored to your voice and audience.</p>
             </div>
             <div className="relative overflow-hidden glass-card p-6 text-left ring-1 ring-[var(--accent)]/20 border border-white/10 bg-[#121a2d]/90 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_24px_60px_rgba(6,8,18,0.55)] before:pointer-events-none before:absolute before:inset-0 before:content-[''] before:bg-[radial-gradient(120%_120%_at_80%_-10%,_var(--accent)/14,_transparent_60%)]">
-              <h3 className="text-lg font-semibold text-white">Lower Costs</h3>
-              <p className="mt-2 text-sm text-[var(--muted)]">Free to start, sane defaults, and dev tooling that reduces trial‑and‑error and wasted spend.</p>
+              <h3 className="text-lg font-semibold text-white">Viral Thumbnails & Post Images</h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">Create scroll‑stopping Substack post images and thumbnails engineered for clicks and shares.</p>
             </div>
             <div className="relative overflow-hidden glass-card p-6 text-left ring-1 ring-[var(--accent)]/20 border border-white/10 bg-[#121a2d]/90 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_24px_60px_rgba(6,8,18,0.55)] before:pointer-events-none before:absolute before:inset-0 before:content-[''] before:bg-[radial-gradient(120%_120%_at_80%_-10%,_var(--accent)/14,_transparent_60%)]">
-              <h3 className="text-lg font-semibold text-white">Production‑Ready</h3>
-              <p className="mt-2 text-sm text-[var(--muted)]">Stripe + Supabase best practices, server‑enforced limits, and clean RLS make shipping safer.</p>
+              <h3 className="text-lg font-semibold text-white">High‑Open Titles & Subjects</h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">Write irresistible titles and email subjects tuned to your ICP to maximize opens and click‑through rates.</p>
             </div>
+          </div>
+
+          {/* Results section with charts */}
+          <div className="mt-16 text-center">
+            <h2 className="text-6xl font-semibold leading-tight tracking-tight sm:text-7xl">
+              <span className="inline-flex items-center justify-center gap-3">
+                <span aria-hidden>🔥</span>
+                <span>
+                  Results Speak <span className="text-[var(--accent)]">For Themselves</span>
+                </span>
+                <span aria-hidden>👇</span>
+              </span>
+            </h2>
+          </div>
+          <div className="mx-auto mt-8 grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2">
+            {[
+              { src: "/c1.png", alt: "EVAA growth results chart 1" },
+              { src: "/c2.png", alt: "EVAA growth results chart 2" },
+            ].map((c) => (
+              <button
+                key={c.src}
+                type="button"
+                onClick={() => setZoomSrc(c.src)}
+                className="group overflow-hidden rounded-3xl border border-white/10 bg-black/30 ring-1 ring-[var(--accent)]/15 shadow-[0_24px_60px_rgba(6,8,18,0.55)] transition-all hover:shadow-[0_34px_80px_rgba(120,120,255,0.35)] hover:ring-[var(--accent)]/30 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] cursor-zoom-in"
+              >
+                <div className="relative">
+                  <img
+                    src={c.src}
+                    alt={c.alt}
+                    className="h-full w-full origin-center transform object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  />
+                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-tr from-white/5 to-transparent" />
+                </div>
+              </button>
+            ))}
           </div>
 
           {/* Glance section title */}
           <div className="mt-16 text-center">
             <h2 className="text-6xl font-semibold leading-tight tracking-tight sm:text-7xl">
-              <span className="block">BoilerKitt</span>
+              <span className="block"><span className="text-[var(--accent-secondary)]">EVAA</span></span>
               <span className="block">At a Glance</span>
             </h2>
           </div>
@@ -286,7 +327,7 @@ export default function Home() {
           {/* Testimonials */}
           <section className="mt-6">
             <h2 className="text-center text-6xl font-semibold leading-tight tracking-tight text-white sm:text-7xl">
-              What Builders Say
+              Real Results from <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">Real Creators</span>
             </h2>
             <div className="mt-8">
               <TestimonialsCarousel />
@@ -300,23 +341,44 @@ export default function Home() {
             >
               View Pricing <ArrowRight size={16} />
             </Link>
-            <button
-              onClick={handleGoToApp}
-              className="cta-secondary cta-compact inline-flex items-center gap-2 px-6 py-3 text-base"
-              type="button"
-            >
-              Go to App
-            </button>
           </div>
         </div>
       </section>
 
+      {/* Lightbox Modal for charts */}
+      {zoomSrc ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setZoomSrc(null)}
+        >
+          <div
+            className="relative max-h-[90vh] max-w-[95vw]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              aria-label="Close"
+              onClick={() => setZoomSrc(null)}
+              className="absolute -right-2 -top-2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm hover:bg-black/80"
+            >
+              <X size={18} />
+            </button>
+            <img
+              src={zoomSrc}
+              alt="Zoomed chart"
+              className="max-h-[53vh] max-w-[56vw] rounded-2xl shadow-2xl"
+            />
+          </div>
+        </div>
+      ) : null}
+
       <section id="pricing" className="border-t border-white/10 bg-white/5">
-        <div className="mx-auto max-w-6xl px-4 py-24">
-          <h2 className="text-center text-3xl font-semibold text-white">Example Pricing (Demo)</h2>
-          <p className="mt-1 text-center text-xs italic text-[var(--muted)]">Sample plans to demonstrate Stripe and plan gating. This boilerplate is free and open‑source.</p>
+        <div className="mx-auto max-w-6xl px-4 pt-10 pb-24">
+          <h2 className="text-center text-3xl font-semibold text-white">Pricing for Creators <span aria-hidden>❤️</span></h2>
+          <p className="mt-1 text-center text-xs italic text-[var(--muted)]">Straightforward plans &amp; pricing give you UNLIMITED access to superchange your growth &amp; revenue.</p>
           <p className="mx-auto mt-3 max-w-xl text-center text-[var(--muted)]">
-            Start on the perpetual Free tier, upgrade with Stripe Checkout when you’re ready.
+            Start on FREE plan. Upgrade when you're commited about growth and turning your Substack into a $10k/month Business
           </p>
           <div className="mt-12">
             <Pricing />
@@ -370,7 +432,7 @@ export default function Home() {
       <section id="case-studies" className="border-t border-white/10 bg-transparent">
         <div className="mx-auto max-w-6xl px-4 py-20">
           <h2 className="text-center text-6xl font-semibold leading-tight tracking-tight text-white sm:text-7xl">
-            More From Builders
+            More From <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">Real Creators</span>
           </h2>
           <div className="mt-8">
             <TestimonialsCarousel />
@@ -378,27 +440,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Big CRO CTA */}
+      {/* CTA only (no heading/image) */}
       <section className="bg-black/10">
         <div className="mx-auto max-w-6xl px-4 py-16 text-center">
-          <h2 className="text-6xl font-semibold leading-tight tracking-tight text-white sm:text-7xl">
-            Launch Your SaaS This Week
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-[var(--muted)]">
-            Skip the boilerplate. Ship features. Free & open source.
-          </p>
-          <div className="mx-auto mt-10 w-full max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-black/30 ring-1 ring-[var(--accent-secondary)]/15 shadow-[0_36px_90px_var(--accent-secondary)/25]">
-            <img
-              src="/wireframe1.png"
-              alt="SaaS dashboard wireframe"
-              className="h-full w-full object-cover"
-              style={{ aspectRatio: '3 / 2' }}
-            />
-          </div>
-          <p className="mt-2 text-center text-xs italic text-[var(--muted)]">(replace this with an actual wireframe or screenshot or animated demo of your SaaS!!!)</p>
-
-          {/* Primary accent CTA (cloned from Let's Go) */}
-          <div className="mt-10 flex justify-center">
+          <div className="mt-0 flex justify-center">
             <div className="group relative">
               <button
                 onClick={handleGoToApp}
@@ -406,7 +451,7 @@ export default function Home() {
                 className="relative inline-flex items-center justify-center rounded-[24px] border border-white/20 bg-[var(--accent)] px-12 py-4 text-2xl font-semibold text-[#0c1325] shadow-[0_24px_48px_rgba(120,120,255,0.28)] transition hover:brightness-110"
               >
                 <span className="pointer-events-none absolute inset-0 rounded-[24px] ring-1 ring-white/10 shadow-inner [box-shadow:inset_0_10px_18px_rgba(255,255,255,0.18),inset_0_-6px_12px_rgba(0,0,0,0.12)]" />
-                <span className="relative">Start Building Now — It’s Free</span>
+                <span className="relative">Start Free — Create Viral Posts Today</span>
               </button>
               {/* Left squiggles */}
               <div className="pointer-events-none absolute left-[-84px] top-1/2 hidden -translate-y-1/2 flex-col items-end gap-3 opacity-0 transition-all duration-300 group-hover:-translate-x-1 group-hover:opacity-100 md:flex" style={{ color: 'var(--accent)' }}>
@@ -448,8 +493,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <p className="mt-3 text-center text-xs italic text-[var(--muted)]">(replace this with a CRO‑focused CTA specific to your SaaS)</p>
-          <div className="mx-auto my-12 h-px w-full max-w-6xl bg-white/10" />
         </div>
       </section>
 
@@ -540,8 +583,8 @@ export default function Home() {
               <div>
                 <h4 className="text-sm font-semibold text-white">Menu</h4>
                 <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
-                  <li><a href="#services" className="hover:text-white">Our Services</a></li>
-                  <li><a href="/pricing" className="hover:text-white">Pricing (Demo)</a></li>
+                  <li><a href="#services" className="hover:text-white">Results</a></li>
+                  <li><a href="/pricing" className="hover:text-white">Pricing</a></li>
                   <li><a href="#faq" className="hover:text-white">FAQ</a></li>
                   <li><a href="#case-studies" className="hover:text-white">Case Studies</a></li>
                 </ul>
@@ -551,15 +594,14 @@ export default function Home() {
                 <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
                   <li><a href="/terms" className="hover:text-white">Terms</a></li>
                   <li><a href="/privacy" className="hover:text-white">Privacy</a></li>
-                  <li><a href="#" className="hover:text-white">License (MIT)</a></li>
                 </ul>
               </div>
               <div>
                 <h4 className="text-sm font-semibold text-white">Socials</h4>
                 <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
-                  <li><a href="#" className="hover:text-white">Twitter / X</a></li>
-                  <li><a href="#" className="hover:text-white">GitHub</a></li>
-                  <li><a href="#" className="hover:text-white">YouTube</a></li>
+                  <li><a href="https://howwegrowtoday.substack.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white">Substack</a></li>
+                  <li><a href="https://linkedin.com/in/ana--calin" target="_blank" rel="noopener noreferrer" className="hover:text-white">LinkedIn</a></li>
+                  <li><a href="https://x.com/howwegrowtoday" target="_blank" rel="noopener noreferrer" className="hover:text-white">Twitter / X</a></li>
                 </ul>
               </div>
             </div>

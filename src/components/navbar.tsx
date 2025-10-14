@@ -67,16 +67,16 @@ export function Navbar() {
             <Link href="/" className="flex items-center gap-3">
               <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-2xl">
                 <Image
-                  src="/imgs_lightning/1.png"
-                  alt="BoilerKitt logo"
+                  src="/icons/icons8-newsletter-64.png"
+                  alt="EVAA logo"
                   width={40}
                   height={40}
                   priority
                   className="h-10 w-10 rounded-lg object-cover"
                 />
               </span>
-              <span className="text-lg font-semibold lowercase tracking-tight text-slate-100/90">
-                boilerkitt
+              <span className="text-lg font-semibold tracking-tight text-slate-100/90">
+                EVAA
               </span>
             </Link>
           </div>
@@ -84,11 +84,10 @@ export function Navbar() {
           {/* Center: Main navigation */}
           <nav className="hidden items-center justify-center gap-6 whitespace-nowrap md:flex">
             {[
-              { label: "Our Services", href: "/#services" },
+              { label: "Results", href: "/#services" },
               { label: "Pricing", href: "#pricing" },
               { label: "FAQ", href: "/#faq" },
               { label: "Case Studies", href: "#case-studies" },
-              { label: "Docs", href: "/docs" },
             ].map((item) => homeNavLink(item.label, item.href))}
           </nav>
 
@@ -132,15 +131,12 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 text-sm font-medium text-slate-100">
         <div className="flex items-center gap-6">
           <Link href="/" className="text-base font-semibold tracking-tight text-white">
-            BoilerKitt
+            EVAA
           </Link>
           <nav className="hidden items-center gap-5 md:flex">
             <Link href="/" className={linkClass("/")}>Home</Link>
             <Link href="/pricing" className={linkClass("/pricing")}>
               Pricing
-            </Link>
-            <Link href="/docs" className={linkClass("/docs")}>
-              Docs
             </Link>
           </nav>
         </div>

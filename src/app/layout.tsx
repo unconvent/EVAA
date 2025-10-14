@@ -13,18 +13,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = "BoilerKitt - An amazing, FREE, Open-source SaaS Boilerplate";
+const title = "EVAA - Turn Your Newsletter Into A$10K/Month Business";
 const description = "Authentication, billing, plan gating, and a polished Next.js UI powered by Supabase and Stripe — free and open source.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   title,
   description,
+  icons: {
+    // Cache-bust with a version param to avoid favicon caching during dev
+    icon: "/icons/icons8-newsletter-64.png?v=2",
+    shortcut: "/icons/icons8-newsletter-64.png?v=2",
+    apple: "/icons/icons8-newsletter-64.png?v=2",
+  },
   openGraph: {
     title,
     description,
     url: "/",
-    siteName: "BoilerKitt",
+    siteName: "EVAA",
     images: [{ url: "/OG-image.png", width: 1200, height: 630 }],
   },
   twitter: {

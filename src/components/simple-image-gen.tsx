@@ -2,9 +2,9 @@
 
 import { useCallback, useState } from "react";
 
-type Props = { plan?: string };
+type Props = { plan?: string; title?: string; subtitle?: string };
 
-export function SimpleImageGen({ plan }: Props) {
+export function SimpleImageGen({ plan, title, subtitle }: Props) {
   const planLower = (plan || "free").toLowerCase();
   const allowed = planLower === "pro" || planLower === "legendary";
   const [prompt, setPrompt] = useState("");
@@ -47,8 +47,8 @@ export function SimpleImageGen({ plan }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-black/30 p-6 text-slate-100 shadow-[0_40px_90px_rgba(6,8,18,0.45)]">
-      <h1 className="text-2xl font-semibold text-white">Simple Image Gen</h1>
-      <p className="mt-2 text-sm text-[var(--muted)]">Generate an image using the Replicate API.</p>
+      <h1 className="text-2xl font-semibold text-white">{title || "Simple Image Gen"}</h1>
+      <p className="mt-2 text-sm text-[var(--muted)]">{subtitle || "Generate an image using the Replicate API."}</p>
       <p className="mt-1 text-xs uppercase tracking-wide text-[var(--muted)]">
         Available only to PRO and LEGENDARY subscribers
       </p>

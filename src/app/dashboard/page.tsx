@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { FloatingActions } from "@/components/floating-actions";
 import { createClient } from "@/lib/supabase/client";
 
 type SubscriptionRow = {
@@ -143,22 +144,12 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 text-slate-100">
+      <FloatingActions />
       <div className="rounded-3xl border border-white/10 bg-black/30 px-8 py-12 shadow-[0_40px_90px_rgba(6,8,18,0.5)]">
         <h1 className="text-4xl font-semibold tracking-tight text-white">
           Welcome, {userEmail}
         </h1>
-        {process.env.NEXT_PUBLIC_GITHUB_URL ? (
-          <div className="mt-4">
-            <a
-              href={process.env.NEXT_PUBLIC_GITHUB_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/15"
-            >
-              View on GitHub
-            </a>
-          </div>
-        ) : null}
+        {/* Removed GitHub link */}
         <p className="mt-2 text-[var(--muted)]">
           Current plan: <span className="text-white">{planDescriptor}</span>{" "}
           <span className="uppercase tracking-wider text-[var(--accent)]">
@@ -168,68 +159,15 @@ export default function DashboardPage() {
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
           <div className="glass-card p-6">
-            <h3 className="text-lg font-semibold text-white">Pro Feature: Analyze</h3>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Example protected endpoint for PRO and above.
-            </p>
-          <button
-            className="cta-primary mt-6 inline-flex rounded-2xl px-4 py-2"
-            onClick={() => callEndpoint("/api/functions/pro")}
-          >
-            Run Analyze
-          </button>
-        </div>
-
-          <div className="glass-card p-6">
-            <h3 className="text-lg font-semibold text-white">Legendary Feature: Generate Report</h3>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Example endpoint gated for LEGENDARY.
-            </p>
-          <button
-            className="cta-primary mt-6 inline-flex rounded-2xl px-4 py-2"
-            onClick={() => callEndpoint("/api/functions/legendary")}
-          >
-            Generate Report
-          </button>
-        </div>
-
-          <div className="glass-card p-6">
-            <h3 className="text-lg font-semibold text-white">AI Subject Line Studio</h3>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Generate 12 high-impact subject lines powered by Together AI. Cooldowns depend on your plan.
-            </p>
-          <Link
-            href="/dashboard/subject-lines"
-            className="cta-primary mt-6 inline-flex w-full items-center justify-center rounded-2xl px-4 py-2 text-base"
-          >
-            Open Studio
-          </Link>
-        </div>
-
-          <div className="glass-card p-6">
-            <h3 className="text-lg font-semibold text-white">Simple Image Gen</h3>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Generate an image with the Replicate API. Displays a preview thumbnail.
-            </p>
-            <Link
-              href="/dashboard/image-gen"
-              className="cta-primary mt-6 inline-flex w-full items-center justify-center rounded-2xl px-4 py-2 text-base"
-            >
-              Open Image Gen
-            </Link>
+            <h3 className="text-lg font-semibold text-white">Viral Notes (Short‑form Text)</h3>
+            <p className="mt-2 text-sm text-[var(--muted)]">Create viral Substack Notes tailored to your audience and voice.</p>
+            <Link href="/dashboard/viral-notes" className="cta-primary mt-6 inline-flex w-full items-center justify-center rounded-2xl px-4 py-2 text-base">Open Notes Studio</Link>
           </div>
 
           <div className="glass-card p-6">
-            <h3 className="text-lg font-semibold text-white">Image Editor (Legendary)</h3>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Upload an image and edit it using the Replicate API. Available only to LEGENDARY subscribers.
-            </p>
-            <Link
-              href="/dashboard/image-editor"
-              className="cta-primary mt-6 inline-flex w-full items-center justify-center rounded-2xl px-4 py-2 text-base"
-            >
-              Open Image Editor
-            </Link>
+            <h3 className="text-lg font-semibold text-white">Viral Post Images & Thumbnails</h3>
+            <p className="mt-2 text-sm text-[var(--muted)]">Generate scroll‑stopping post images and thumbnails engineered for CTR.</p>
+            <Link href="/dashboard/viral-images" className="cta-primary mt-6 inline-flex w-full items-center justify-center rounded-2xl px-4 py-2 text-base">Open Image Studio</Link>
           </div>
 
           <div className="glass-card p-6">

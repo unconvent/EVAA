@@ -5,24 +5,27 @@ import { createClient } from "@/lib/supabase/client";
 const plans = [
   {
     name: "PRO",
-    description: "Core features for growing teams.",
+    description: "Core features for growing creators.",
     monthlyEnv: "STRIPE_PRICE_PRO_MONTHLY",
     yearlyEnv: "STRIPE_PRICE_PRO_YEARLY",
-    priceMonthly: "$19",
-    priceYearly: "$190",
-    features: ["Unlimited projects", "Pro API access", "Basic analytics"],
+    priceMonthly: "$9.90",
+    priceYearly: "$97",
+    features: [
+      "Unlimited Notes (viral short-form text content)",
+      "Viral Image Generation — 1/week",
+    ],
   },
   {
     name: "LEGENDARY",
-    description: "Everything we have, maxed out.",
+    description: "Everything unlimited for serious growth.",
     monthlyEnv: "STRIPE_PRICE_LEGENDARY_MONTHLY",
     yearlyEnv: "STRIPE_PRICE_LEGENDARY_YEARLY",
-    priceMonthly: "$49",
-    priceYearly: "$490",
+    priceMonthly: "$49.97",
+    priceYearly: "$497",
     features: [
-      "All Pro features",
-      "Priority compute",
-      "Advanced analytics & export",
+      "Unlimited Notes",
+      "Unlimited Viral images",
+      "Unlimited Everything",
     ],
   },
 ];
@@ -117,7 +120,7 @@ export function Pricing() {
       <div className="mx-auto mb-6 max-w-3xl rounded-2xl border border-red-500/30 bg-[linear-gradient(135deg,#ef4444_0%,#f59e0b_100%)] px-4 py-3 text-center text-sm text-white shadow-[0_18px_40px_rgba(239,68,68,0.35)]">
         <div className="font-semibold">
           <span className="mr-1 inline-block animate-bounce">🔥</span>
-          Limited Time Launch Sale: <span className="underline">50% OFF Annual Plans</span>
+          Limited Time Launch Sale: <span className="underline">Special Introductory Pricing on All Plans</span>
           {deadline ? (
             <>
               {" "}· Ends in <span className="tabular-nums">{countdownLabel}</span>
@@ -189,6 +192,15 @@ export function Pricing() {
             </div>
           );
         })}
+      </div>
+      {/* Free plan limitations note */}
+      <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-red-500/50 bg-black/20 p-4 text-center text-sm text-red-200">
+        <div className="font-semibold text-red-400">Limitations of Free Plan</div>
+        <ul className="mx-auto mt-2 max-w-xl space-y-1 text-left">
+          <li>• Basic Access to Core Features</li>
+          <li>• Notes Generation — Only 1/day (includes 3 notes)</li>
+          <li>• Viral Image Generation — Only 1/week (includes 3 images)</li>
+        </ul>
       </div>
     </div>
   );

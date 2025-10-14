@@ -31,6 +31,24 @@ alter table public.profiles
 alter table public.profiles
   add column if not exists subject_last_run_at timestamp with time zone;
 
+-- Separate cooldown tracking for Viral Notes feature
+alter table public.profiles
+  add column if not exists notes_last_run_at timestamp with time zone;
+
+-- Separate cooldown tracking for Viral Images & Thumbnails
+alter table public.profiles
+  add column if not exists images_last_run_at timestamp with time zone;
+
+-- Device-based cooldowns (for unauthenticated flows)
+create table if not exists public.cooldowns (
+  device_id text not null,
+  kind text not null,
+  last_run_at timestamp with time zone,
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now(),
+  primary key (device_id, kind)
+);
+
 create index if not exists profiles_stripe_customer_idx on public.profiles(stripe_customer_id);
 
 -- Subscriptions table stores Stripe subscription status
@@ -49,7 +67,10 @@ create table if not exists public.subscriptions (
 alter table public.profiles enable row level security;
 alter table public.subscriptions enable row level security;
 
+drop policy if exists "Can view own profile" on public.profiles;
 create policy "Can view own profile" on public.profiles for select using ( auth.uid() = id );
+
+drop policy if exists "Can view own subscriptions" on public.subscriptions;
 create policy "Can view own subscriptions" on public.subscriptions for select using ( auth.uid() = user_id );
 
 create index if not exists subscriptions_customer_idx on public.subscriptions(stripe_customer_id);
@@ -93,7 +114,8 @@ alter table public.subscribers enable row level security;
 create unique index if not exists subscribers_email_unique on public.subscribers (lower(email));
 
 -- Allow anyone (even signed-out) to insert an email
-create policy if not exists "Anyone can subscribe" on public.subscribers
+drop policy if exists "Anyone can subscribe" on public.subscribers;
+create policy "Anyone can subscribe" on public.subscribers
   for insert
   with check (true);
 

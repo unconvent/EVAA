@@ -12,36 +12,39 @@ type Testimonial = {
 const PLACEHOLDER_QUOTES = [
   {
     quote:
-      "I shipped a real SaaS skeleton over a weekend. Auth, plans, and billing just worked.",
-    name: "Alex P.",
-    role: "Indie Dev",
+      "AI titles and hooks consistently beat mine. Click‑throughs jumped overnight.",
+    name: "Jamie R.",
+    role: "Substack Creator",
   },
   {
     quote:
-      "Exactly the starting point I needed for client projects. Saved me days of wiring.",
-    name: "Dana K.",
-    role: "Freelancer",
+      "Thumbnail ideas are instant bangers. More clicks, more subs, less guesswork.",
+    name: "Omar T.",
+    role: "YouTuber",
   },
   {
     quote:
-      "Clean patterns for Stripe + Supabase + plan gating. Less guesswork, more shipping.",
-    name: "Sam R.",
-    role: "Startup Engineer",
+      "Notes take minutes now. Posting daily 3×ed my list in 6 weeks.",
+    name: "Lila P.",
+    role: "Newsletter Operator",
   },
   {
-    quote: "Went from zero to working demo in hours, not weeks.",
-    name: "Priya S.",
-    role: "Maker",
+    quote:
+      "Subjects match my ICP perfectly. Open rates are finally predictable.",
+    name: "Victor M.",
+    role: "B2B Creator",
   },
   {
-    quote: "The examples taught my team the right patterns fast.",
-    name: "Jordan L.",
-    role: "Agency Lead",
+    quote:
+      "The image generator nails the vibe. Shares spiked across my posts.",
+    name: "Ava S.",
+    role: "Writer",
   },
   {
-    quote: "Best free boilerplate I’ve used. Thoughtful details everywhere.",
-    name: "Chris M.",
-    role: "Full‑stack Dev",
+    quote:
+      "EVAA is my silent co‑writer and designer. Publishing is fun again.",
+    name: "Chris D.",
+    role: "Indie Publisher",
   },
 ];
 
