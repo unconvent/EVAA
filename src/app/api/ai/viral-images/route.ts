@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 type Body = {
   title?: string;
   style?: string;
-  aspectRatio?: "16:9" | "4:3" | "3:2" | "1:1";
+  aspectRatio?: "16:9" | "4:3" | "3:2" | "1:1" | "9:16";
   keywords?: string;
   lessVirality?: boolean;
 };

@@ -19,7 +19,7 @@ export function ViralImagesStudio({ plan }: Props) {
   const planLower = (plan || "free").toLowerCase() as Plan;
   const [title, setTitle] = useState("");
   const [style, setStyle] = useState("");
-  const [aspectRatio, setAspectRatio] = useState<"16:9" | "4:3" | "3:2" | "1:1">("16:9");
+  const [aspectRatio, setAspectRatio] = useState<"16:9" | "4:3" | "3:2" | "1:1" | "9:16">("16:9");
   const [keywords, setKeywords] = useState("");
   const [lessVirality, setLessVirality] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -176,7 +176,7 @@ export function ViralImagesStudio({ plan }: Props) {
 
         <label className="block text-sm font-medium text-slate-200">Aspect Ratio</label>
         <div className="flex flex-wrap gap-2 text-sm">
-          {(["16:9", "4:3", "3:2", "1:1"] as const).map((ar) => (
+          {(["16:9", "4:3", "3:2", "1:1", "9:16"] as const).map((ar) => (
             <button
               key={ar}
               type="button"
