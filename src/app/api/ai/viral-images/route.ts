@@ -34,23 +34,22 @@ function formatRemaining(ms: number) {
 }
 
 function buildPrompt({ title, style, keywords, lessVirality, aspectRatio }: Required<Pick<Body, "title" | "style" | "aspectRatio">> & Pick<Body, "keywords" | "lessVirality">) {
+  // Non‑vertical (thumbnail) — leaner template per spec
   const lines: string[] = [];
-  lines.push(`Make a viral post image/thumbnail for a post titled "${title}".`);
-  lines.push("Display the title prominently on the image, in an engaging manner.");
+  lines.push(`Make a viral thumbnail for a post titled "${title}"`);
+  if (lessVirality) lines.push(`Title grabs attention. Visuals spark curiosity.`);
+  else lines.push(`Title grabs attention. Visuals spark curiosity. Designed to farm engagement.`);
+  lines.push('');
+  lines.push(`Engaging, eye‑catching visuals. ${style}.`);
+  // (No reference image branch in this version)
   lines.push(
     lessVirality
-      ? "Bold, creative, curiosity‑driven visuals. High clarity."
-      : "Viral, bold, creative visuals engineered to hook and captivate."
+      ? `Bold, creative visuals; highlight action/emotion; captivate the viewer.`
+      : `Viral, bold, creative visuals; highlight action/emotion; hook and captivate.`
   );
-  // Insert the chosen style verbatim as its own instruction line
-  lines.push(style);
-  lines.push(`Use aspect ratio ${aspectRatio}.`);
-  lines.push("Clear subject/background separation. Strong depth and contrast. Avoid clutter.");
-  lines.push("Do not include any UI, stickers, logos, watermarks, borders, or subtitles.");
-  lines.push("Readable in 0.3 seconds; the main idea must be instantly understood.");
-  if (keywords && keywords.trim()) lines.push(`Additional keywords: ${keywords.trim()}`);
-  // Note: we always generate 2 images per run; no need to instruct variants explicitly.
-  return lines.filter(Boolean).join("\n");
+  if (keywords && String(keywords).trim()) lines.push(`\nAdditional keywords: ${String(keywords).trim()}`);
+  // Do not mention placeholder/reference AR; aspect ratio is handled via the model parameter.
+  return lines.join('\n');
 }
 
 function parseReplicateOutput(output: unknown): string | null {
