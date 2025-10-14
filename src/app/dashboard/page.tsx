@@ -192,7 +192,7 @@ export default function DashboardPage() {
             href="/pricing"
             className="cta-secondary mt-6 inline-flex rounded-2xl px-4 py-2"
           >
-              See Pricing
+              Upgrade Today
             </Link>
           </div>
         </div>
