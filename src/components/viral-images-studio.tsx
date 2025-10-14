@@ -205,7 +205,7 @@ export function ViralImagesStudio({ plan }: Props) {
         <button
           onClick={handleGenerate}
           disabled={streaming}
-          className="cta-primary inline-flex items-center gap-2 rounded-2xl px-5 py-2 text-base"
+          className="inline-flex items-center gap-2 rounded-2xl px-5 py-2 text-base bg-[var(--accent-secondary)] text-white shadow-[0_14px_32px_rgba(255,77,0,0.28)] transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {streaming ? "Generating…" : "Generate 2 Images"}
         </button>
