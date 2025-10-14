@@ -35,23 +35,12 @@ export function Pricing() {
   const [deadline, setDeadline] = useState<number | null>(null);
   const [remaining, setRemaining] = useState<number>(0);
 
-  // Initialize a 48h countdown, persisted in localStorage so it doesn't reset every refresh
+  // Initialize a fixed countdown ending on Oct 31, 2025 (UTC)
   useEffect(() => {
-    const KEY = "boilerkitt_launch_sale_ends_at";
-    try {
-      const fromStorage = localStorage.getItem(KEY);
-      let endAt = fromStorage ? parseInt(fromStorage, 10) : NaN;
-      if (!Number.isFinite(endAt) || endAt < Date.now()) {
-        endAt = Date.now() + 48 * 60 * 60 * 1000; // 48h from now
-        localStorage.setItem(KEY, String(endAt));
-      }
-      setDeadline(endAt);
-      setRemaining(Math.max(0, endAt - Date.now()));
-    } catch {
-      const endAt = Date.now() + 48 * 60 * 60 * 1000;
-      setDeadline(endAt);
-      setRemaining(Math.max(0, endAt - Date.now()));
-    }
+    // Months are 0-indexed: 9 = October
+    const endAt = Date.UTC(2025, 9, 31, 23, 59, 59);
+    setDeadline(endAt);
+    setRemaining(Math.max(0, endAt - Date.now()));
   }, []);
 
   useEffect(() => {
@@ -68,14 +57,17 @@ export function Pricing() {
   const countdownLabel = (() => {
     const ms = remaining;
     const totalSec = Math.floor(ms / 1000);
-    const hrs = Math.floor(totalSec / 3600);
+    const days = Math.floor(totalSec / 86400);
+    const hrs = Math.floor((totalSec % 86400) / 3600)
+      .toString()
+      .padStart(2, "0");
     const mins = Math.floor((totalSec % 3600) / 60)
       .toString()
       .padStart(2, "0");
     const secs = Math.floor(totalSec % 60)
       .toString()
       .padStart(2, "0");
-    return `${hrs}h ${mins}m ${secs}s`;
+    return days > 0 ? `${days}d ${hrs}h ${mins}m ${secs}s` : `${hrs}h ${mins}m ${secs}s`;
   })();
 
   const handleCheckout = async (plan: string, interval: "month" | "year") => {
