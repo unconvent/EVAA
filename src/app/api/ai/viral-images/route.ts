@@ -60,12 +60,15 @@ function parseReplicateOutput(output: unknown): string | null {
     const first = output[0];
     if (!first) return null;
     if (typeof first === "string") return first;
-    if (typeof first === "object" && first && (first as any).image) return String((first as any).image);
+    if (typeof first === "object" && first !== null && "image" in first) {
+      const img = (first as { image?: unknown }).image;
+      if (typeof img === "string") return img;
+    }
   }
-  if (typeof output === "object") {
-    const obj = output as Record<string, any>;
-    if (typeof obj.url === "string") return obj.url;
-    if (typeof obj.image === "string") return obj.image;
+  if (typeof output === "object" && output !== null) {
+    const obj = output as Record<string, unknown>;
+    if (typeof obj.url === "string") return obj.url as string;
+    if (typeof obj.image === "string") return obj.image as string;
   }
   return null;
 }
@@ -187,7 +190,7 @@ export async function POST(req: Request) {
               // Fallback model
               try {
                 output = await replicate.run("black-forest-labs/FLUX.1-schnell", { input });
-              } catch (fallbackErr) {
+              } catch {
                 throw primaryErr instanceof Error ? primaryErr : new Error("Image generation failed");
               }
             }

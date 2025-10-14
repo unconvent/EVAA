@@ -35,7 +35,10 @@ export default async function ViralImagesPage() {
       <div className="mb-8">
         <Link href="/dashboard" className="text-sm text-[var(--muted)] transition hover:text-white">← Back to dashboard</Link>
       </div>
-      <ViralImagesStudio plan={(plan?.toLowerCase() as any) || "free"} />
+      {(() => {
+        const p = (plan?.toLowerCase() ?? "free") as "free" | "pro" | "legendary";
+        return <ViralImagesStudio plan={p} />;
+      })()}
     </main>
   );
 }

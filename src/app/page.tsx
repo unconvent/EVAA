@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Sparkles, Zap, Rocket, KeyRound, Lock, Webhook, LayoutDashboard, Timer, Image as ImageIcon, Wand2, X } from "lucide-react";
+import { ArrowRight, Sparkles, Rocket, KeyRound, Timer, Image as ImageIcon, Wand2, X } from "lucide-react";
 import { Pricing } from "@/components/pricing";
 import { LogoCarousel } from "@/components/logo-carousel";
 import { TestimonialsCarousel } from "@/components/testimonials-carousel";
@@ -179,7 +179,7 @@ export default function Home() {
             <span className="block"><span className="text-[var(--accent)]">That Drives Results</span></span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-[var(--muted)]">
-            Join 65,000+ creators who've 2X'd their subscriber growth and tripled their revenue using our AI-powered growth engine.
+            Join 65,000+ creators who&apos;ve 2X&apos;d their subscriber growth and tripled their revenue using our AI-powered growth engine.
           </p>
           {/* Primary CTA (acts like Sign in) */}
           <div className="mt-8 flex justify-center">
@@ -378,7 +378,7 @@ export default function Home() {
           <h2 className="text-center text-3xl font-semibold text-white">Pricing for Creators <span aria-hidden>❤️</span></h2>
           <p className="mt-1 text-center text-xs italic text-[var(--muted)]">Straightforward plans &amp; pricing give you UNLIMITED access to superchange your growth &amp; revenue.</p>
           <p className="mx-auto mt-3 max-w-xl text-center text-[var(--muted)]">
-            Start on FREE plan. Upgrade when you're commited about growth and turning your Substack into a $10k/month Business
+            Start on FREE plan. Upgrade when you&apos;re commited about growth and turning your Substack into a $10k/month Business
           </p>
           <div className="mt-12">
             <Pricing />
@@ -532,7 +532,7 @@ export default function Home() {
                         return;
                       }
                       setSubscribed(true);
-                    } catch (err) {
+                    } catch {
                       alert("Network error. Please try again later.");
                     }
                   }}
