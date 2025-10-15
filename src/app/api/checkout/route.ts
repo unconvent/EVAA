@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${successUrl}/dashboard?checkout=success`,
       cancel_url: `${successUrl}/pricing?checkout=cancel`,
+      allow_promotion_codes: true,
       subscription_data: {
         metadata: { plan, interval, supabase_user_id: userId },
       },
