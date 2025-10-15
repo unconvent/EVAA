@@ -161,13 +161,13 @@ export default function DashboardPage() {
           <div className="glass-card p-6">
             <h3 className="text-lg font-semibold text-white">Viral Notes (Short‑form Text)</h3>
             <p className="mt-2 text-sm text-[var(--muted)]">Create viral Substack Notes tailored to your audience and voice.</p>
-            <Link href="/dashboard/viral-notes" className="mt-6 inline-flex w-full items-center justify-center rounded-2xl px-4 py-2 text-base font-semibold text-white bg-[var(--accent-secondary)] shadow-[0_10px_24px_rgba(255,77,0,0.28)] hover:brightness-110">Open Notes Studio</Link>
+            <Link href="/dashboard/viral-notes" className="upgrade-cta-secondary cta-compact mt-6 inline-flex w-full items-center justify-center px-4 py-2 text-base">Open Notes Studio</Link>
           </div>
 
           <div className="glass-card p-6">
             <h3 className="text-lg font-semibold text-white">Viral Post Images & Thumbnails</h3>
             <p className="mt-2 text-sm text-[var(--muted)]">Generate scroll‑stopping post images and thumbnails engineered for CTR.</p>
-            <Link href="/dashboard/viral-images" className="mt-6 inline-flex w-full items-center justify-center rounded-2xl px-4 py-2 text-base font-semibold text-white bg-[var(--accent-secondary)] shadow-[0_10px_24px_rgba(255,77,0,0.28)] hover:brightness-110">Open Image Studio</Link>
+            <Link href="/dashboard/viral-images" className="upgrade-cta-secondary cta-compact mt-6 inline-flex w-full items-center justify-center px-4 py-2 text-base">Open Image Studio</Link>
           </div>
 
           <div className="glass-card p-6">

@@ -90,3 +90,18 @@ a {
   box-shadow: 0 12px 26px rgba(81, 250, 170, 0.22);
   transform: translateY(-1px);
 }
+
+/* Secondary-accent variant for upgrade-style buttons */
+.upgrade-cta-secondary {
+  background: #211f36;
+  border: 1px solid var(--accent-secondary);
+  color: var(--accent-secondary);
+  border-radius: 0.5em;
+  font-weight: 600;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.upgrade-cta-secondary:hover {
+  box-shadow: 0 12px 26px rgba(255, 129, 255, 0.22);
+  transform: translateY(-1px);
+}
