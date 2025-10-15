@@ -73,6 +73,7 @@ export function ViralNotesStudio({ plan, interval, lastRunAt, userId }: ViralNot
   const [topic, setTopic] = useState("");
   const [rawOutput, setRawOutput] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
+  const [prompt, setPrompt] = useState("");
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
@@ -80,6 +81,79 @@ export function ViralNotesStudio({ plan, interval, lastRunAt, userId }: ViralNot
 
   const cooldownLabel = useMemo(() => (cooldownMs > 0 ? formatRemaining(cooldownMs) : "None"), [cooldownMs]);
   const nextAvailableLabel = useMemo(() => (cooldownMs > 0 ? formatDateTime(nextAvailable) : null), [nextAvailable, cooldownMs]);
+
+  function buildUserPrompt(t: string, noteType?: "trust" | "awareness" | "clarity") {
+    const topicClean = t.trim();
+    const typeLabel = noteType === "trust" ? "trust" : noteType === "clarity" ? "clarity" : noteType === "awareness" ? "awareness" : undefined;
+
+    const typeBlock = (() => {
+      if (noteType === "trust") {
+        return (
+          "A Trust Note solves the problem : \"Everyone in this space sounds the same. Who's actually real?\"\n" +
+          "It solves it by:\n" +
+          "Showing behind-the-scenes of your reality\n" +
+          "Admitting uncomfortable truths\n" +
+          "Sharing what you're actually struggling with\n" +
+          "These Notes make them think: \"This person gets it. They're not full of shit.\"\n\n"
+        );
+      }
+      if (noteType === "clarity") {
+        return (
+          "A Clarity Note solves the Problem: \"I know I need help but I don't know what's available.\"\n" +
+          "It solves it by:\n" +
+          "Telling them exactly what you offer\n" +
+          "Showing who it's for and who it's not for\n" +
+          "Making it easy to say yes or no\n" +
+          "These Notes make them think: \"Oh, that's exactly what I need.\"\n\n"
+        );
+      }
+      if (noteType === "awareness") {
+        return (
+          "An Awareness Note solves the Problem: \"I don't even know this solution exists.\"\n" +
+          "It solves it by:\n" +
+          "Teaching something valuable for free\n" +
+          "Showing a glimpse of your methodology\n" +
+          "Making them want to learn more\n" +
+          "These Notes make them think: \"I need to follow this person.\"\n\n"
+        );
+      }
+      return "";
+    })();
+
+    const userPrompt = `USER TOPIC = ${topicClean}\n\n` +
+      `Write exactly 5 highly ${typeLabel ? typeLabel + " " : ""}engaging notes designed to go viral on the USER TOPIC above. Keep them punchy, impactful, and useful. No fluff.\n\n` +
+      "Of the 5 notes: write 4 as SHORT-FORM and 1 as LONG-FORM.\n\n" +
+      typeBlock +
+      "SHORT-FORM (4 notes):\n" +
+      "- Begin with a STRONG hook (max 10 words).\n" +
+      "- After the hook, continue for 4–9 lines.\n" +
+      "- Vary the line counts across the 4 notes (e.g., 4, 7, 3, 9). They must NOT all have the same number of lines.\n" +
+      "- Each line is a short, sweet sentence on its own line.\n" +
+      "- Every sentence should stand on its own and deliver tangible value.\n" +
+      "- Each note, as a whole, must deliver real value, connect emotionally, educate or entertain.\n\n" +
+      "LONG-FORM (1 note):\n" +
+      "- Educational, personal, and story-driven.\n" +
+      "- At least 400 words.\n" +
+      "- Structured with short lines (one sentence per line) for readability.\n\n" +
+      "Style & Constraints:\n" +
+      "- Challenge assumptions, reframe ideas, or create urgency.\n" +
+      "- Natural, conversational, sharp. Avoid jargon, fancy words, and emojis.\n" +
+      "- Optimistic but grounded—no empty inspiration.\n" +
+      "- If the topic is about Substack, highlight consistency, value, the long game, and Substack's organic advantages.\n" +
+      "- Each sentence on a new line. Maximize readability.\n" +
+      "- DO NOT end notes with a question.\n\n" +
+      "Hooks must be eye-catching and creative, triggering emotion and curiosity without low-value clickbait. Prefer: specific numbers, surprising stats, bold contrasts, time-bound stakes, social proof, or counterintuitive insight. Use vivid, imperative verbs and write in second person to create immediacy. No question marks. Follow the hook with a re-hook in the first sentence.\n\n" +
+      "Separate each note with the markdown delimiter ###---###.\n" +
+      "Output only the notes and nothing else—no explanations or extra text.\n" +
+      "HARD BANS (must comply):\n" +
+      "- Do NOT number, label, or preface anything (no 'SHORT-FORM', 'LONG-FORM', 'Note', 'Hook', etc.).\n" +
+      "- Do NOT include headings or markdown formatting (no **bold**, _italics_, # headings, > blockquotes, or code fences).\n" +
+      "- Do NOT use bullet markers at the start of lines (- , * , • , 1. , (1), etc.).\n" +
+      "- Begin each note directly with the hook text on the first line, then the remaining lines of the note.\n" +
+      "- Never include the words 'Hook', 'Short-form', or 'Long-form' anywhere in the output.";
+
+    return userPrompt;
+  }
 
   const handleGenerate = useCallback(async (noteType?: "trust" | "awareness" | "clarity") => {
     if (!topic.trim()) {
@@ -90,6 +164,9 @@ export function ViralNotesStudio({ plan, interval, lastRunAt, userId }: ViralNot
     setGenerating(true);
     setRawOutput("");
     setNotes([]);
+    // Build and expose the exact prompt we're sending
+    const builtPrompt = buildUserPrompt(topic, noteType);
+    setPrompt(builtPrompt);
     try {
       const res = await fetch("/api/ai/notes", {
         method: "POST",
@@ -192,21 +269,21 @@ export function ViralNotesStudio({ plan, interval, lastRunAt, userId }: ViralNot
           <button
             onClick={() => handleGenerate("trust")}
             disabled={generating}
-            className="inline-flex items-center gap-2 rounded-2xl px-5 py-2 text-base font-semibold bg-[var(--accent-secondary)] text-white shadow-[0_14px_32px_rgba(255,77,0,0.28)] drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)] transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="upgrade-cta-secondary cta-compact inline-flex items-center justify-center px-4 py-2 text-base disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {generating ? "Generating..." : "Generate Trust Notes"}
           </button>
           <button
             onClick={() => handleGenerate("awareness")}
             disabled={generating}
-            className="inline-flex items-center gap-2 rounded-2xl px-5 py-2 text-base font-semibold bg-[var(--accent-secondary)] text-white shadow-[0_14px_32px_rgba(255,77,0,0.28)] drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)] transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="upgrade-cta-secondary cta-compact inline-flex items-center justify-center px-4 py-2 text-base disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {generating ? "Generating..." : "Generate Awareness Notes"}
           </button>
           <button
             onClick={() => handleGenerate("clarity")}
             disabled={generating}
-            className="inline-flex items-center gap-2 rounded-2xl px-5 py-2 text-base font-semibold bg-[var(--accent-secondary)] text-white shadow-[0_14px_32px_rgba(255,77,0,0.28)] drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)] transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="upgrade-cta-secondary cta-compact inline-flex items-center justify-center px-4 py-2 text-base disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {generating ? "Generating..." : "Generate Clarity Notes"}
           </button>
@@ -245,6 +322,18 @@ export function ViralNotesStudio({ plan, interval, lastRunAt, userId }: ViralNot
               </article>
             ))}
           </div>
+        </section>
+      ) : null}
+
+      {prompt ? (
+        <section className="mt-6">
+          <h2 className="text-lg font-semibold text-white">Prompt</h2>
+          <textarea
+            value={prompt}
+            readOnly
+            rows={12}
+            className="mt-3 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:outline-none whitespace-pre-wrap"
+          />
         </section>
       ) : null}
     </div>

@@ -249,6 +249,8 @@ export async function POST(req: Request) {
           "Content-Type": "text/plain; charset=utf-8",
           "Cache-Control": "no-cache",
           "Transfer-Encoding": "chunked",
+          // Expose the exact prompt used for transparency/debugging in the UI
+          "X-Prompt": userPrompt,
         },
       });
     }
@@ -312,6 +314,8 @@ export async function POST(req: Request) {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-cache",
         "Transfer-Encoding": "chunked",
+        // Expose the exact prompt used for transparency/debugging in the UI
+        "X-Prompt": userPrompt,
       },
     });
   } catch (error) {
