@@ -15,8 +15,11 @@ function formatDateTime(date: Date | null) {
   return date.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
-export function ViralImagesStudio({ plan }: Props) {
+export function ViralImagesStudio({ plan, interval }: Props) {
   const planLower = (plan || "free").toLowerCase() as Plan;
+  const prettyPlan = planLower === "legendary" ? "Legendary" : planLower === "pro" ? "Pro" : "Free";
+  const intervalLower = (interval || "").toLowerCase();
+  const prettyInterval = intervalLower === "year" ? "Annual" : intervalLower === "month" ? "Monthly" : null;
   const [title, setTitle] = useState("");
   const [style, setStyle] = useState("");
   const [aspectRatio, setAspectRatio] = useState<"16:9" | "4:3" | "3:2" | "1:1" | "9:16">("16:9");
@@ -124,6 +127,9 @@ export function ViralImagesStudio({ plan }: Props) {
     <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-black/30 px-6 py-8 text-slate-100 shadow-[0_40px_90px_rgba(6,8,18,0.45)]">
       <header className="flex flex-col gap-2 border-b border-white/10 pb-6">
         <h1 className="text-3xl font-semibold text-white">Viral Post Images & Thumbnails</h1>
+        <p className="text-sm text-[var(--muted)]">
+          Current plan: <span className="font-semibold text-white">{prettyInterval ? `${prettyPlan} · ${prettyInterval}` : prettyPlan}</span>
+        </p>
         <p className="text-sm text-[var(--muted)]">{cooldownLabel}</p>
         {retryAt ? (
           <p className="text-xs uppercase tracking-wider text-[var(--muted)]">Next available run: {formatDateTime(retryAt)}</p>

@@ -19,15 +19,17 @@ export default async function ViralImagesPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/pricing?signin=required");
   let plan: string = "free";
+  let interval: string | null = null;
   try {
     const { data: sub } = await supabase
       .from("subscriptions")
-      .select("plan, created_at")
+      .select("plan, interval, created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
     plan = sub?.plan ?? "free";
+    interval = (sub?.interval as string | null) ?? null;
   } catch {}
   return (
     <main className="mx-auto max-w-5xl px-4 py-16">
@@ -37,7 +39,7 @@ export default async function ViralImagesPage() {
       </div>
       {(() => {
         const p = (plan?.toLowerCase() ?? "free") as "free" | "pro" | "legendary";
-        return <ViralImagesStudio plan={p} />;
+        return <ViralImagesStudio plan={p} interval={interval} />;
       })()}
     </main>
   );
