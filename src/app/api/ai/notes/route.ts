@@ -164,7 +164,7 @@ export async function POST(req: Request) {
 
     const userPrompt = `USER TOPIC = ${topic.trim()}\n\n` +
       // High-level goal
-      `Write exactly 5 highly ${typeLabel ? typeLabel + " " : ""}engaging notes designed to go viral on the USER TOPIC above. Keep them punchy, impactful, and useful. No fluff.\n\n` +
+      `Write exactly 5 highly engaging ${typeLabel ? typeLabel + " " : ""} notes designed to go viral on the USER TOPIC above. Keep them punchy, impactful, and useful. No fluff.\n\n` +
       // Composition requirements
       "Of the 5 notes: write 4 as SHORT-FORM and 1 as LONG-FORM.\n\n" +
       // Insert the type characteristics block if present
@@ -249,8 +249,6 @@ export async function POST(req: Request) {
           "Content-Type": "text/plain; charset=utf-8",
           "Cache-Control": "no-cache",
           "Transfer-Encoding": "chunked",
-          // Expose the exact prompt used for transparency/debugging in the UI
-          "X-Prompt": userPrompt,
         },
       });
     }
@@ -314,8 +312,6 @@ export async function POST(req: Request) {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-cache",
         "Transfer-Encoding": "chunked",
-        // Expose the exact prompt used for transparency/debugging in the UI
-        "X-Prompt": userPrompt,
       },
     });
   } catch (error) {
