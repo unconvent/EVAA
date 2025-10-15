@@ -190,7 +190,7 @@ export default function DashboardPage() {
             </p>
           <Link
             href="/pricing"
-            className="cta-secondary mt-6 inline-flex rounded-2xl px-4 py-2"
+            className="mt-6 inline-flex items-center justify-center rounded-2xl px-4 py-2 text-base font-semibold text-black bg-[linear-gradient(135deg,#ef4444_0%,#f59e0b_100%)] shadow-[0_18px_40px_rgba(239,68,68,0.35)] hover:brightness-110"
           >
               Upgrade Today
             </Link>
