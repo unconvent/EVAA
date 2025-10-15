@@ -58,9 +58,14 @@ async function fetchPlanInfo(client: ReturnType<typeof createAdminClient>, userI
   throw profileError;
 }
 
+type NoteType = "trust" | "awareness" | "clarity";
+
 export async function POST(req: Request) {
   try {
-    const { topic } = (await req.json().catch(() => ({}))) as { topic?: string };
+    const { topic, noteType } = (await req.json().catch(() => ({}))) as {
+      topic?: string;
+      noteType?: NoteType;
+    };
     if (!topic || typeof topic !== "string" || !topic.trim()) {
       return NextResponse.json({ error: "Describe your topic first." }, { status: 400 });
     }
@@ -121,11 +126,49 @@ export async function POST(req: Request) {
       }
     }
 
+    const typeLabel = noteType === "trust" ? "trust" : noteType === "clarity" ? "clarity" : noteType === "awareness" ? "awareness" : undefined;
+
+    const typeBlock = (() => {
+      if (noteType === "trust") {
+        return (
+          "A Trust Note solves the problem : \"Everyone in this space sounds the same. Who's actually real?\"\n" +
+          "It solves it by:\n" +
+          "Showing behind-the-scenes of your reality\n" +
+          "Admitting uncomfortable truths\n" +
+          "Sharing what you're actually struggling with\n" +
+          "These Notes make them think: \"This person gets it. They're not full of shit.\"\n\n"
+        );
+      }
+      if (noteType === "clarity") {
+        return (
+          "A Clarity Note solves the Problem: \"I know I need help but I don't know what's available.\"\n" +
+          "It solves it by:\n" +
+          "Telling them exactly what you offer\n" +
+          "Showing who it's for and who it's not for\n" +
+          "Making it easy to say yes or no\n" +
+          "These Notes make them think: \"Oh, that's exactly what I need.\"\n\n"
+        );
+      }
+      if (noteType === "awareness") {
+        return (
+          "An Awareness Note solves the Problem: \"I don't even know this solution exists.\"\n" +
+          "It solves it by:\n" +
+          "Teaching something valuable for free\n" +
+          "Showing a glimpse of your methodology\n" +
+          "Making them want to learn more\n" +
+          "These Notes make them think: \"I need to follow this person.\"\n\n"
+        );
+      }
+      return "";
+    })();
+
     const userPrompt = `USER TOPIC = ${topic.trim()}\n\n` +
       // High-level goal
-      "Write exactly 5 highly engaging notes designed to go viral on the USER TOPIC above. Keep them punchy, impactful, and useful. No fluff.\n\n" +
+      `Write exactly 5 highly ${typeLabel ? typeLabel + " " : ""}engaging notes designed to go viral on the USER TOPIC above. Keep them punchy, impactful, and useful. No fluff.\n\n` +
       // Composition requirements
       "Of the 5 notes: write 4 as SHORT-FORM and 1 as LONG-FORM.\n\n" +
+      // Insert the type characteristics block if present
+      typeBlock +
       // Short-form spec
       "SHORT-FORM (4 notes):\n" +
       "- Begin with a STRONG hook (max 10 words).\n" +

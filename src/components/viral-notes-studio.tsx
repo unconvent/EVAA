@@ -81,7 +81,7 @@ export function ViralNotesStudio({ plan, interval, lastRunAt, userId }: ViralNot
   const cooldownLabel = useMemo(() => (cooldownMs > 0 ? formatRemaining(cooldownMs) : "None"), [cooldownMs]);
   const nextAvailableLabel = useMemo(() => (cooldownMs > 0 ? formatDateTime(nextAvailable) : null), [nextAvailable, cooldownMs]);
 
-  const handleGenerate = useCallback(async () => {
+  const handleGenerate = useCallback(async (noteType?: "trust" | "awareness" | "clarity") => {
     if (!topic.trim()) {
       setError("Please describe your topic, audience, or goal first.");
       return;
@@ -94,7 +94,7 @@ export function ViralNotesStudio({ plan, interval, lastRunAt, userId }: ViralNot
       const res = await fetch("/api/ai/notes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ topic, noteType }),
       });
 
       if (!res.ok) {
@@ -188,13 +188,29 @@ export function ViralNotesStudio({ plan, interval, lastRunAt, userId }: ViralNot
           className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:outline-none"
         />
         {error ? <p className="text-sm text-red-400">{error}</p> : null}
-        <button
-          onClick={handleGenerate}
-          disabled={generating}
-          className="inline-flex items-center gap-2 rounded-2xl px-5 py-2 text-base font-semibold bg-[var(--accent-secondary)] text-white shadow-[0_14px_32px_rgba(255,77,0,0.28)] drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)] transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {generating ? "Generating..." : "Generate Notes"}
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => handleGenerate("trust")}
+            disabled={generating}
+            className="inline-flex items-center gap-2 rounded-2xl px-5 py-2 text-base font-semibold bg-[var(--accent-secondary)] text-white shadow-[0_14px_32px_rgba(255,77,0,0.28)] drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)] transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {generating ? "Generating..." : "Generate Trust Notes"}
+          </button>
+          <button
+            onClick={() => handleGenerate("awareness")}
+            disabled={generating}
+            className="inline-flex items-center gap-2 rounded-2xl px-5 py-2 text-base font-semibold bg-[var(--accent-secondary)] text-white shadow-[0_14px_32px_rgba(255,77,0,0.28)] drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)] transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {generating ? "Generating..." : "Generate Awareness Notes"}
+          </button>
+          <button
+            onClick={() => handleGenerate("clarity")}
+            disabled={generating}
+            className="inline-flex items-center gap-2 rounded-2xl px-5 py-2 text-base font-semibold bg-[var(--accent-secondary)] text-white shadow-[0_14px_32px_rgba(255,77,0,0.28)] drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)] transition hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {generating ? "Generating..." : "Generate Clarity Notes"}
+          </button>
+        </div>
       </section>
 
       {(rawOutput || notes.length) ? (
