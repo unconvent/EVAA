@@ -202,6 +202,9 @@ export async function POST(req: Request) {
       "- Begin each note directly with the hook text on the first line, then the remaining lines of the note.\n" +
       "- Never include the words 'Hook', 'Short-form', or 'Long-form' anywhere in the output.";
 
+    // Use a random seed per request to avoid identical outputs for the same input
+    const seed = Math.floor(Math.random() * 0x7fffffff);
+
     const llmRes = await fetch(POLLINATIONS_URL, {
       method: "POST",
       headers: {
@@ -212,6 +215,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         model,
         stream: true,
+        seed,
         messages: [
           { role: "user", content: userPrompt },
         ],
