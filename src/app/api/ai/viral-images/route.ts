@@ -21,6 +21,8 @@ const COOLDOWNS: Record<string, number> = {
   legendary: 0,
 };
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 function formatRemaining(ms: number) {
   const totalSeconds = Math.ceil(ms / 1000);
   const days = Math.floor(totalSeconds / 86400);
@@ -170,6 +172,19 @@ export async function POST(req: Request) {
 
         for (let i = 0; i < COUNT; i++) {
           try {
+            if (i > 0) {
+              // Throttle between generations to avoid Replicate rate limits
+              await writer.write(
+                encoder.encode(
+                  `data: ${JSON.stringify({
+                    status: "waiting",
+                    message: "Throttling before next image generation to avoid rate limits",
+                  })}\n\n`
+                )
+              );
+              await delay(10_000);
+            }
+
             await writer.write(encoder.encode(`data: ${JSON.stringify({ status: "generating", message: `Starting generation ${i + 1}/${COUNT}` })}\n\n`));
 
             const input: Record<string, unknown> = {
