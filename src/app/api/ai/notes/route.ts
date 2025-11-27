@@ -202,122 +202,91 @@ export async function POST(req: Request) {
       "- Begin each note directly with the hook text on the first line, then the remaining lines of the note.\n" +
       "- Never include the words 'Hook', 'Short-form', or 'Long-form' anywhere in the output.";
 
-    // Use a random seed per request to avoid identical outputs for the same input
-    const seed = Math.floor(Math.random() * 0x7fffffff);
 
-    const llmRes = await fetch(POLLINATIONS_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "Accept": "text/event-stream",
-      },
-      body: JSON.stringify({
-        model,
-        stream: true,
-        seed,
-        messages: [
-          { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+      const seed = Math.floor(Math.random() * 0x7fffffff);
 
-    if (!llmRes.ok) {
-      const errorText = await llmRes.text().catch(() => "Unable to read Pollinations response");
-      console.error("Pollinations request failed", llmRes.status, errorText);
-      return NextResponse.json(
-        { error: "Pollinations request failed. Check server logs for details." },
-        { status: 502 }
-      );
-    }
-
-    // Stream response (SSE-style if provided). We normalize to plain text token stream.
-    const decoder = new TextDecoder();
-    const encoder = new TextEncoder();
-    const { readable, writable } = new TransformStream();
-    const writer = writable.getWriter();
-
-    let closed = false;
-    const closeWriter = async () => {
-      if (!closed) {
-        closed = true;
-        await writer.close();
+      const llmRes = await fetch(POLLINATIONS_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: "user", content: userPrompt }],
+          seed,
+        }),
+      });
+  
+      if (!llmRes.ok) {
+        const errorText = await llmRes.text().catch(() => "Unable to read Pollinations response");
+        console.error("Pollinations request failed", llmRes.status, errorText);
+        return NextResponse.json(
+          { error: "Pollinations request failed. Check server logs for details." },
+          { status: 502 }
+        );
       }
-    };
-
-    if (!llmRes.body) {
-      await writer.write(encoder.encode(""));
-      await closeWriter();
-      return new Response(readable, {
+  
+      const reader = llmRes.body?.getReader();
+      if (!reader) {
+        console.error("Pollinations response missing body");
+        return NextResponse.json(
+          { error: "Pollinations response was empty." },
+          { status: 502 }
+        );
+      }
+  
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let output = "";
+  
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+  
+        let idx;
+        while ((idx = buffer.indexOf("\n")) !== -1) {
+          const line = buffer.slice(0, idx).trim();
+          buffer = buffer.slice(idx + 1);
+  
+          if (!line || line.startsWith(":")) continue;
+          if (line === "data: [DONE]") {
+            buffer = "";
+            break;
+          }
+  
+          if (line.startsWith("data:")) {
+            const payload = line.slice(5).trim();
+            if (!payload) continue;
+            try {
+              const json = JSON.parse(payload);
+              const token =
+                json.choices?.[0]?.delta?.content ||
+                json.choices?.[0]?.message?.content ||
+                "";
+              if (token) output += token;
+            } catch {
+              // ignore non-JSON chunks
+            }
+          }
+        }
+      }
+  
+      if (!output.trim()) {
+        console.error("Pollinations stream returned no content");
+        return NextResponse.json(
+          { error: "Pollinations response was empty." },
+          { status: 502 }
+        );
+      }
+  
+      return new Response(output, {
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
           "Cache-Control": "no-cache",
-          "Transfer-Encoding": "chunked",
         },
       });
-    }
-
-    (async () => {
-      const reader = llmRes.body!.getReader();
-      let buffer = "";
-      let sseDetected = false;
-      try {
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) break;
-          const chunkText = decoder.decode(value, { stream: true });
-          buffer += chunkText;
-
-          // Detect SSE by presence of lines starting with 'data:'
-          if (!sseDetected && /\n\s*data:/i.test(buffer)) {
-            sseDetected = true;
-          }
-
-          if (sseDetected) {
-            let idx;
-            while ((idx = buffer.indexOf("\n")) !== -1) {
-              const line = buffer.slice(0, idx).trim();
-              buffer = buffer.slice(idx + 1);
-              if (!line || line.startsWith(":")) continue;
-              if (line === "data: [DONE]") {
-                await closeWriter();
-                return;
-              }
-              if (line.startsWith("data:")) {
-                const payload = line.slice(5).trim();
-                if (!payload) continue;
-                try {
-                  const json = JSON.parse(payload);
-                  const token = json.choices?.[0]?.delta?.content || json.choices?.[0]?.message?.content || json.content;
-                  if (token) await writer.write(encoder.encode(String(token)));
-                } catch {
-                  // Non-JSON payload; write raw
-                  await writer.write(encoder.encode(payload));
-                }
-              }
-            }
-          } else {
-            // Not SSE: write raw chunk
-            await writer.write(encoder.encode(chunkText));
-            buffer = "";
-          }
-        }
-      } catch (e) {
-        console.error("Pollinations stream error", e);
-        const reason = e instanceof Error ? e : new Error(String(e));
-        await writer.abort(reason);
-        return;
-      }
-      await closeWriter();
-    })();
-
-    return new Response(readable, {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache",
-        "Transfer-Encoding": "chunked",
-      },
-    });
   } catch (error) {
     console.error("Viral notes generator error", error);
     return NextResponse.json({ error: "Unexpected server error." }, { status: 500 });
