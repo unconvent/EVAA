@@ -217,7 +217,7 @@ export async function POST(req: Request) {
           seed,
         }),
       });
-  
+
       if (!llmRes.ok) {
         const errorText = await llmRes.text().catch(() => "Unable to read Pollinations response");
         console.error("Pollinations request failed", llmRes.status, errorText);
@@ -226,61 +226,39 @@ export async function POST(req: Request) {
           { status: 502 }
         );
       }
-  
-      const reader = llmRes.body?.getReader();
-      if (!reader) {
-        console.error("Pollinations response missing body");
-        return NextResponse.json(
-          { error: "Pollinations response was empty." },
-          { status: 502 }
-        );
-      }
-  
-      const decoder = new TextDecoder();
-      let buffer = "";
+
+      // Pollinations chat endpoint now returns a single JSON response
+      // in OpenAI-compatible format, not an SSE stream.
       let output = "";
-  
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-  
-        let idx;
-        while ((idx = buffer.indexOf("\n")) !== -1) {
-          const line = buffer.slice(0, idx).trim();
-          buffer = buffer.slice(idx + 1);
-  
-          if (!line || line.startsWith(":")) continue;
-          if (line === "data: [DONE]") {
-            buffer = "";
-            break;
-          }
-  
-          if (line.startsWith("data:")) {
-            const payload = line.slice(5).trim();
-            if (!payload) continue;
-            try {
-              const json = JSON.parse(payload);
-              const token =
-                json.choices?.[0]?.delta?.content ||
-                json.choices?.[0]?.message?.content ||
-                "";
-              if (token) output += token;
-            } catch {
-              // ignore non-JSON chunks
-            }
-          }
+      try {
+        const json = await llmRes.json();
+        const choices = Array.isArray((json as any).choices) ? (json as any).choices : [];
+        if (choices.length > 0) {
+          const first = choices[0] as any;
+          output =
+            first?.message?.content ??
+            first?.delta?.content ??
+            choices
+              .map((c: any) => c?.message?.content ?? c?.delta?.content ?? "")
+              .join("");
         }
+      } catch (e) {
+        const fallbackText = await llmRes.text().catch(() => "");
+        console.error("Failed to parse Pollinations JSON response", e, fallbackText);
+        return NextResponse.json(
+          { error: "Pollinations returned an invalid response format." },
+          { status: 502 }
+        );
       }
-  
-      if (!output.trim()) {
-        console.error("Pollinations stream returned no content");
+
+      if (!output || !output.trim()) {
+        console.error("Pollinations JSON response contained no content");
         return NextResponse.json(
           { error: "Pollinations response was empty." },
           { status: 502 }
         );
       }
-  
+
       return new Response(output, {
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
