@@ -60,6 +60,15 @@ async function fetchPlanInfo(client: ReturnType<typeof createAdminClient>, userI
 
 type NoteType = "trust" | "awareness" | "clarity";
 
+type PollinationsChatChoice = {
+  message?: { content?: string | null } | null;
+  delta?: { content?: string | null } | null;
+};
+
+type PollinationsChatResponse = {
+  choices?: PollinationsChatChoice[] | null;
+};
+
 export async function POST(req: Request) {
   try {
     const { topic, noteType } = (await req.json().catch(() => ({}))) as {
@@ -231,15 +240,15 @@ export async function POST(req: Request) {
       // in OpenAI-compatible format, not an SSE stream.
       let output = "";
       try {
-        const json = await llmRes.json();
-        const choices = Array.isArray((json as any).choices) ? (json as any).choices : [];
+        const json = (await llmRes.json()) as PollinationsChatResponse;
+        const choices = Array.isArray(json.choices) ? json.choices : [];
         if (choices.length > 0) {
-          const first = choices[0] as any;
+          const first = choices[0];
           output =
             first?.message?.content ??
             first?.delta?.content ??
             choices
-              .map((c: any) => c?.message?.content ?? c?.delta?.content ?? "")
+              .map((c) => c?.message?.content ?? c?.delta?.content ?? "")
               .join("");
         }
       } catch (e) {
