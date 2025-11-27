@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-const POLLINATIONS_URL = "https://text.pollinations.ai/openai";
+const POLLINATIONS_URL = "https://enter.pollinations.ai/api/generate/v1/chat/completions";
 export const dynamic = "force-dynamic";
 
 // Free: limit to 1 run per 24h; Pro/Legendary: unlimited (no cooldown)
